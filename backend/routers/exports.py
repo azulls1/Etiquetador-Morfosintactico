@@ -4,19 +4,23 @@ import logging
 import zipfile
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from models.schemas import ExportRequest, ViterbiRequest
 from services import excel_exporter, notebook_generator, viterbi_algorithm
 from config import EXPORTS_DIR
 
 logger = logging.getLogger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/api/exports", tags=["Exportación"])
 
 
 @router.get("/emission/excel")
-async def export_emission_excel(top_n: int = 30):
+@limiter.limit("10/minute")
+async def export_emission_excel(request: Request, top_n: int = 30):
     """Genera y descarga el Excel de probabilidades de emisión."""
     try:
         filepath = excel_exporter.generate_emission_excel(top_n)
@@ -30,7 +34,8 @@ async def export_emission_excel(top_n: int = 30):
 
 
 @router.get("/transition/excel")
-async def export_transition_excel():
+@limiter.limit("10/minute")
+async def export_transition_excel(request: Request):
     """Genera y descarga el Excel de probabilidades de transición."""
     try:
         filepath = excel_exporter.generate_transition_excel()
@@ -44,10 +49,11 @@ async def export_transition_excel():
 
 
 @router.post("/viterbi/excel")
-async def export_viterbi_excel(request: ViterbiRequest):
+@limiter.limit("10/minute")
+async def export_viterbi_excel(body: ViterbiRequest, request: Request):
     """Ejecuta Viterbi y genera el Excel con la matriz."""
     try:
-        result = viterbi_algorithm.viterbi(request.sentence)
+        result = viterbi_algorithm.viterbi(body.sentence)
         filepath = excel_exporter.generate_viterbi_excel(result)
         return FileResponse(
             filepath,
@@ -59,7 +65,8 @@ async def export_viterbi_excel(request: ViterbiRequest):
 
 
 @router.get("/notebook")
-async def export_notebook():
+@limiter.limit("10/minute")
+async def export_notebook(request: Request):
     """Genera y descarga el Jupyter Notebook del proyecto."""
     try:
         filepath = notebook_generator.generate_notebook()
@@ -74,7 +81,8 @@ async def export_notebook():
 
 
 @router.get("/zip")
-async def export_all_zip():
+@limiter.limit("5/minute")
+async def export_all_zip(request: Request):
     """Genera y descarga un ZIP con todos los archivos exportados."""
     try:
         # Generar todos los archivos

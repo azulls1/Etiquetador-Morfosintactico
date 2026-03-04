@@ -1,7 +1,9 @@
 """Endpoints de corpus: carga, estadísticas y búsqueda."""
 
 import logging
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from models.schemas import (
     CorpusUploadRequest, CorpusStats, CorpusSearchRequest,
@@ -11,6 +13,7 @@ from services import corpus_parser
 from models import database
 
 logger = logging.getLogger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/api/corpus", tags=["Corpus"])
 
 # Estado de la carga
@@ -44,8 +47,10 @@ def _process_corpus(corpus_dir, max_files):
 
 
 @router.post("/upload", response_model=StatusResponse)
+@limiter.limit("3/minute")
 async def upload_corpus(
-    request: CorpusUploadRequest,
+    body: CorpusUploadRequest,
+    request: Request,
     background_tasks: BackgroundTasks,
 ):
     """Inicia el procesamiento del corpus en segundo plano."""
@@ -58,13 +63,13 @@ async def upload_corpus(
     background_tasks.add_task(
         _process_corpus,
         None,  # Siempre usa CORPUS_DIR del servidor (seguridad: no aceptar paths del cliente)
-        request.max_files,
+        body.max_files,
     )
 
     return StatusResponse(
         status="started",
         message="Procesamiento del corpus iniciado en segundo plano.",
-        detail={"corpus_dir": request.corpus_dir or "default"},
+        detail={"corpus_dir": body.corpus_dir or "default"},
     )
 
 

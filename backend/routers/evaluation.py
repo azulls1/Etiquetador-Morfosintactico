@@ -1,16 +1,21 @@
 """Endpoints de evaluacion cuantitativa del modelo HMM."""
 
 import logging
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from services import evaluation
 
 logger = logging.getLogger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/api/evaluation", tags=["Evaluacion"])
 
 
 @router.post("/evaluate")
+@limiter.limit("5/minute")
 async def run_evaluation(
+    request: Request,
     test_ratio: float = Query(0.1, ge=0.01, le=0.5, description="Proporcion del corpus para test (0.01-0.5)"),
     smoothing: float = Query(1.0, ge=0.0, le=10.0, description="Parametro alpha de Laplace"),
     seed: int = Query(42, ge=0, description="Semilla para reproducibilidad del split"),

@@ -1,7 +1,9 @@
 """Endpoints de probabilidades de emisión y transición."""
 
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from models.schemas import ProbabilityResponse, StatusResponse
 from services import hmm_trainer
@@ -9,11 +11,13 @@ from services.corpus_parser import get_corpus_data
 from models import database
 
 logger = logging.getLogger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/api/probabilities", tags=["Probabilidades"])
 
 
 @router.post("/train", response_model=StatusResponse)
-async def train_model(smoothing: float = 1.0):
+@limiter.limit("5/minute")
+async def train_model(request: Request, smoothing: float = 1.0):
     """Calcula las probabilidades de emisión y transición.
 
     Query params:
