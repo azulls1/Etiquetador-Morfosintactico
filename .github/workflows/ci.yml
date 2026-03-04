@@ -1,0 +1,107 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11', '3.12']
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+          pip install pytest pytest-cov httpx
+
+      - name: Lint backend with ruff
+        run: |
+          pip install ruff
+          ruff check backend/ --ignore=E501,F401 --exit-zero
+
+      - name: Run backend tests
+        working-directory: backend
+        run: |
+          pytest tests/ -v --tb=short -x
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend (production)
+        working-directory: frontend
+        run: npm run build -- --configuration=production
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend Docker image
+        run: docker build -t etiquetador-backend ./backend
+
+      - name: Build frontend Docker image
+        run: docker build -t etiquetador-frontend ./frontend
+
+  validate-consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
+      - name: Validate version consistency
+        run: |
+          VERSION=$(cat .nxt/version.txt | tr -d '\n\r')
+          echo "Expected version: $VERSION"
+
+          CONFIG_VERSION=$(python -c "import yaml; print(yaml.safe_load(open('.nxt/nxt.config.yaml'))['framework']['version'])")
+          echo "Config version: $CONFIG_VERSION"
+          if [ "$VERSION" != "$CONFIG_VERSION" ]; then
+            echo "::error::Version mismatch in nxt.config.yaml"
+            exit 1
+          fi
+
+          STATE_VERSION=$(python -c "import json; print(json.load(open('.nxt/state.json'))['framework_version'])")
+          echo "State version: $STATE_VERSION"
+          if [ "$VERSION" != "$STATE_VERSION" ]; then
+            echo "::error::Version mismatch in state.json"
+            exit 1
+          fi
+
+          echo "All versions are consistent: $VERSION"

@@ -1,0 +1,10 @@
+# Solutioning Phase Documents
+
+Esta carpeta contendrá los documentos generados durante la fase de solutioning:
+
+- architecture.md
+- tech-specs/*.md
+- ux/*.md
+- diagrams/*.svg
+- adrs/*.md
+- api-spec.yaml

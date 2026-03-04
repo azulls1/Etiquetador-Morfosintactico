@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(node --version:*)",
+      "Bash(npm:*)",
+      "Bash(ng version:*)",
+      "Bash(pip:*)",
+      "Bash(python -m pip:*)",
+      "Bash(ls:*)",
+      "Bash(head:*)",
+      "Bash(wc:*)",
+      "Bash(du -h:*)",
+      "Bash(du:*)",
+      "Bash(python:*)",
+      "Bash(where:*)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(ng new:*)",
+      "Bash(test:*)",
+      "Bash(npx ng build:*)",
+      "Bash(npx ng serve:*)",
+      "Bash(netstat:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(timeout:*)",
+      "Bash(cmd /c \"taskkill /PID 1988 /F\")",
+      "Bash(cmd /c \"taskkill /PID 1988 /F 2>&1\")",
+      "Bash(TASKKILL:*)",
+      "Bash(del \"C:\\\\Users\\\\shernandez\\\\Desktop\\\\mestria\\\\Etiquetador-Morfosintáctico\\\\nul\")",
+      "Bash(git clone:*)",
+      "Bash(xcopy:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

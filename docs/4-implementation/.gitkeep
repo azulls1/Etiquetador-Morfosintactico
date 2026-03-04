@@ -1,0 +1,9 @@
+# Implementation Phase Documents
+
+Esta carpeta contendrá los documentos generados durante la fase de implementación:
+
+- stories/*.md
+- sprint-*-plan.md
+- reviews/*.md
+- qa/*.md
+- backlog.xlsx

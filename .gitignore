@@ -1,0 +1,82 @@
+# ========================
+# Backend (Python/FastAPI)
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+.env
+.env.local
+.venv/
+venv/
+env/
+
+# Backend cache y exports generados
+backend/cache/*.pkl
+backend/exports/*.xlsx
+backend/exports/*.ipynb
+backend/exports/*.zip
+
+# ========================
+# Frontend (Angular)
+# ========================
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/tmp/
+frontend/out-tsc/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+
+# ========================
+# IDEs y editores
+# ========================
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+.history/
+
+# ========================
+# Sistema operativo
+# ========================
+.DS_Store
+Thumbs.db
+desktop.ini
+nul
+
+# ========================
+# Testing y cobertura
+# ========================
+coverage/
+.nyc_output/
+*.lcov
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ========================
+# NXT Framework
+# ========================
+.nxt/context/
+.nxt/state/
+.nxt/checkpoints/
+.claude/projects/
+.claude/memory/
+
+# ========================
+# Misc
+# ========================
+*.log
+*.tmp
+*.bak
+*.orig

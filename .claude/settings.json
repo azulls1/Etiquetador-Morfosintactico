@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "project": {
+    "name": "NXT AI Development",
+    "type": "ai-development-framework",
+    "version": "3.6.0"
+  },
+  "permissions": {
+    "allow_file_creation": true,
+    "allow_file_deletion": false,
+    "allow_shell_commands": true
+  },
+  "context": {
+    "include": [
+      "CLAUDE.md",
+      ".claude/rules/*.md",
+      ".nxt/nxt.config.yaml",
+      "agentes/*.md",
+      "skills/**/*.md"
+    ],
+    "exclude": [
+      "node_modules/**",
+      ".git/**",
+      "*.log",
+      ".env"
+    ]
+  },
+  "preferences": {
+    "language": "es",
+    "style": "profesional",
+    "show_welcome": true
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "framework_version": "3.6.0",
+  "orchestrator_version": "3.6.0",
+  "current_phase": "desarrollo",
+  "current_context": {
+    "task": "Etiquetador Morfosintactico HMM Bigrama + Viterbi",
+    "scale": "nivel_3",
+    "current_phase": "desarrollo",
+    "current_agent": null,
+    "completed_steps": [
+      "analyst",
+      "architect",
+      "design",
+      "dev",
+      "qa",
+      "cybersec",
+      "accessibility",
+      "performance",
+      "docs"
+    ],
+    "pending_steps": [
+      "devops_deploy",
+      "compliance_review"
+    ],
+    "artifacts": {
+      "backend_api": "backend/main.py",
+      "hmm_trainer": "backend/services/hmm_trainer.py",
+      "viterbi_algorithm": "backend/services/viterbi_algorithm.py",
+      "corpus_parser": "backend/services/corpus_parser.py",
+      "eagles_tags": "backend/services/eagles_tags.py",
+      "frontend_app": "frontend/src/app/app.component.ts",
+      "dashboard": "frontend/src/app/features/dashboard/dashboard.component.ts",
+      "viterbi_ui": "frontend/src/app/features/viterbi/viterbi.component.ts",
+      "corpus_ui": "frontend/src/app/features/corpus/corpus.component.ts",
+      "analysis_ui": "frontend/src/app/features/analysis/analysis.component.ts",
+      "probabilities_ui": "frontend/src/app/features/probabilities/probabilities.component.ts",
+      "exports_ui": "frontend/src/app/features/exports/exports.component.ts",
+      "unit_tests": "backend/tests/",
+      "docker_compose": "docker-compose.yml",
+      "readme": "README.md"
+    },
+    "decisions": [
+      {
+        "id": "ADR-001",
+        "title": "HMM Bigrama con Viterbi para POS Tagging",
+        "description": "Modelo de Markov Oculto de bigramas con algoritmo de Viterbi para etiquetado morfosintactico del espanol",
+        "date": "2026-01-15"
+      },
+      {
+        "id": "ADR-002",
+        "title": "Angular 19 standalone + FastAPI",
+        "description": "Frontend Angular 19 con standalone components y backend FastAPI con Python 3.12",
+        "date": "2026-01-15"
+      },
+      {
+        "id": "ADR-003",
+        "title": "Suavizado de Laplace para HMM",
+        "description": "Implementar add-alpha smoothing para evitar probabilidades cero en emision y transicion",
+        "date": "2026-03-04"
+      },
+      {
+        "id": "ADR-004",
+        "title": "Indice word_to_tags para Viterbi O(1)",
+        "description": "Crear indice invertido word->tags durante entrenamiento para busqueda O(1) en Viterbi en vez de O(n)",
+        "date": "2026-03-04"
+      },
+      {
+        "id": "ADR-005",
+        "title": "Corpus dir del servidor, no del cliente",
+        "description": "Ignorar corpus_dir enviado por cliente por seguridad, usar siempre CORPUS_DIR del servidor",
+        "date": "2026-03-04"
+      }
+    ],
+    "started_at": "2026-01-15T00:00:00.000000"
+  },
+  "completed_tasks": [
+    {
+      "id": "task_20260115_backend",
+      "task": "Implementar backend FastAPI con HMM trainer y Viterbi",
+      "completed_at": "2026-02-01T00:00:00.000000",
+      "agents": ["nxt-architect", "nxt-dev", "nxt-api"]
+    },
+    {
+      "id": "task_20260201_frontend",
+      "task": "Implementar frontend Angular 19 con dashboard y visualizaciones",
+      "completed_at": "2026-02-15T00:00:00.000000",
+      "agents": ["nxt-design", "nxt-dev"]
+    },
+    {
+      "id": "task_20260215_uiux",
+      "task": "Rediseno completo UI/UX con glassmorphism y dark mode",
+      "completed_at": "2026-03-03T00:00:00.000000",
+      "agents": ["nxt-design", "nxt-accessibility"]
+    },
+    {
+      "id": "task_20260304_agents",
+      "task": "Ejecucion de 32 agentes NXT: auditoria completa del proyecto",
+      "completed_at": "2026-03-04T00:00:00.000000",
+      "agents": ["nxt-orchestrator", "nxt-analyst", "nxt-pm", "nxt-architect", "nxt-design", "nxt-dev", "nxt-qa", "nxt-docs", "nxt-scrum", "nxt-devops", "nxt-cybersec", "nxt-api", "nxt-database", "nxt-integrations", "nxt-flows", "nxt-infra", "nxt-migrator", "nxt-performance", "nxt-accessibility", "nxt-mobile", "nxt-data", "nxt-aiml", "nxt-compliance", "nxt-realtime", "nxt-localization", "nxt-context", "nxt-changelog", "nxt-ralph", "nxt-multicontext", "nxt-checkpoint", "nxt-resume", "nxt-tech-writer"]
+    },
+    {
+      "id": "task_20260304_fixes",
+      "task": "Implementar 9 acciones prioritarias del reporte de agentes",
+      "completed_at": "2026-03-04T00:00:00.000000",
+      "agents": ["nxt-cybersec", "nxt-performance", "nxt-qa", "nxt-accessibility", "nxt-dev"]
+    }
+  ],
+  "pending_tasks": [],
+  "active_agents": [],
+  "decisions_log": [
+    {
+      "type": "classification",
+      "task": "Etiquetador Morfosintactico completo",
+      "scale": "nivel_3",
+      "estimated_files": 35,
+      "estimated_hours": 120,
+      "timestamp": "2026-01-15T00:00:00.000000"
+    },
+    {
+      "type": "security_fix",
+      "task": "Restringir corpus_dir - path traversal prevention",
+      "agent": "nxt-cybersec",
+      "file": "backend/routers/corpus.py",
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "performance_fix",
+      "task": "word_to_tags indice invertido O(1) para Viterbi",
+      "agent": "nxt-performance",
+      "files": ["backend/services/hmm_trainer.py", "backend/services/viterbi_algorithm.py"],
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "quality_fix",
+      "task": "Laplace smoothing para HMM training",
+      "agent": "nxt-aiml",
+      "file": "backend/services/hmm_trainer.py",
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "testing",
+      "task": "30 unit tests creados (test_viterbi.py + test_corpus_parser.py)",
+      "agent": "nxt-qa",
+      "files": ["backend/tests/test_viterbi.py", "backend/tests/test_corpus_parser.py"],
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "accessibility",
+      "task": "Skip link y ARIA labels agregados",
+      "agent": "nxt-accessibility",
+      "files": ["frontend/src/app/app.component.ts", "frontend/src/app/shared/components/sidebar/sidebar.component.ts"],
+      "timestamp": "2026-03-04T00:00:00.000000"
+    }
+  ],
+  "session_history": [
+    {
+      "session_id": "session_20260304_001",
+      "started_at": "2026-03-04T00:00:00.000000",
+      "summary": "Integracion NXT Framework + ejecucion 32 agentes + implementacion 9 acciones prioritarias",
+      "tasks_completed": 5,
+      "files_modified": 12,
+      "files_created": 10
+    }
+  ],
+  "registries": {
+    "agents_loaded": true,
+    "skills_loaded": true,
+    "workflows_loaded": true
+  },
+  "integration_status": {
+    "bmad_connected": true,
+    "mcp_connected": true,
+    "event_bus_active": true,
+    "hooks_enabled": true,
+    "self_healing_active": true,
+    "learning_enabled": true,
+    "metrics_collection": true,
+    "persistence_agents_active": true
+  },
+  "capabilities": {
+    "event_emission": true,
+    "self_healing": true,
+    "circuit_breaker": true,
+    "learning_from_decisions": true,
+    "predictive_classification": true,
+    "health_monitoring": true,
+    "metrics_collection": true,
+    "auto_persistence": true
+  },
+  "persistence_agents": {
+    "enabled": true,
+    "run_on_every_interaction": true,
+    "agents": [
+      "nxt-context",
+      "nxt-multicontext",
+      "nxt-changelog",
+      "nxt-ralph"
+    ],
+    "triggers": [
+      "on_session_start",
+      "on_task_complete",
+      "on_agent_switch",
+      "on_checkpoint",
+      "on_session_end",
+      "always",
+      "on_every_interaction"
+    ],
+    "always_trigger_includes_all": true
+  },
+  "last_updated": "2026-03-04T12:00:00.000000"
+}

@@ -1,0 +1,144 @@
+import { Component, Input } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
+interface NavItem {
+  label: string;
+  icon: string;
+  route: string;
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+@Component({
+  selector: 'app-sidebar',
+  standalone: true,
+  imports: [RouterModule],
+  template: `
+    <aside
+      role="navigation"
+      aria-label="Menu lateral"
+      class="sidebar-panel fixed lg:static inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-out lg:translate-x-0 flex flex-col"
+      [class.-translate-x-full]="!isOpen"
+      [class.translate-x-0]="isOpen">
+
+      <!-- Navigation -->
+      <nav aria-label="Navegación principal" class="flex-1 px-3 py-4 overflow-y-auto mt-16 lg:mt-0">
+        @for (group of navGroups; track group.title; let groupIdx = $index) {
+          <div class="sidebar-section-header flex items-center gap-2 px-3 mb-2" [class.mt-5]="groupIdx > 0">
+            <span class="text-[10px] font-bold tracking-[0.08em] uppercase sidebar-section-text">{{ group.title }}</span>
+            <div class="flex-1 h-px sidebar-section-line"></div>
+          </div>
+
+          <ul class="space-y-0.5 mb-1">
+            @for (item of group.items; track item.route) {
+              <li>
+                <a [routerLink]="item.route"
+                   routerLinkActive="sidebar-active"
+                   [routerLinkActiveOptions]="{exact: item.route === '/'}"
+                   class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative">
+                  <span class="sidebar-icon-box w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200">
+                    <svg class="w-[17px] h-[17px] sidebar-icon transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                      <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon"/>
+                    </svg>
+                  </span>
+                  <span class="sidebar-label">{{ item.label }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </nav>
+    </aside>
+
+    <!-- Overlay for mobile -->
+    @if (isOpen) {
+      <div class="fixed inset-0 z-30 lg:hidden sidebar-overlay" (click)="isOpen = false"></div>
+    }
+  `,
+  styles: [`
+    .sidebar-panel {
+      background: #fafbfc;
+      border-right: 1px solid #e5e7eb;
+    }
+    :host-context(.dark) .sidebar-panel {
+      background: #111827;
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-section-text { color: #9ca3af; }
+    :host-context(.dark) .sidebar-section-text { color: #6b7280; }
+
+    .sidebar-section-line { background: #e5e7eb; }
+    :host-context(.dark) .sidebar-section-line { background: rgba(255, 255, 255, 0.06); }
+
+    .sidebar-link { color: #4b5563; }
+    .sidebar-link:hover { background: rgba(47, 84, 150, 0.04); color: #1f2937; }
+    :host-context(.dark) .sidebar-link { color: #9ca3af; }
+    :host-context(.dark) .sidebar-link:hover { background: rgba(255, 255, 255, 0.04); color: #e5e7eb; }
+
+    .sidebar-icon-box { background: rgba(0, 0, 0, 0.03); }
+    :host-context(.dark) .sidebar-icon-box { background: rgba(255, 255, 255, 0.06); }
+
+    .sidebar-icon { color: #6b7280; }
+    :host-context(.dark) .sidebar-icon { color: #9ca3af; }
+
+    /* Active state */
+    .sidebar-link.sidebar-active {
+      background: linear-gradient(135deg, rgba(47, 84, 150, 0.08), rgba(47, 84, 150, 0.04));
+      color: #2F5496;
+    }
+    :host-context(.dark) .sidebar-link.sidebar-active {
+      background: linear-gradient(135deg, rgba(47, 84, 150, 0.2), rgba(47, 84, 150, 0.08));
+      color: #93c5fd;
+    }
+    .sidebar-link.sidebar-active .sidebar-icon-box {
+      background: linear-gradient(135deg, #2F5496, #1e3a6e) !important;
+      box-shadow: 0 2px 8px rgba(47, 84, 150, 0.35);
+    }
+    .sidebar-link.sidebar-active .sidebar-icon { color: #ffffff !important; }
+    .sidebar-link.sidebar-active .sidebar-label { font-weight: 600; }
+
+    /* Hover icon */
+    .sidebar-link:hover:not(.sidebar-active) .sidebar-icon-box { background: rgba(47, 84, 150, 0.08); }
+    :host-context(.dark) .sidebar-link:hover:not(.sidebar-active) .sidebar-icon-box { background: rgba(255, 255, 255, 0.1); }
+    .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #2F5496; }
+    :host-context(.dark) .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #93c5fd; }
+
+    .sidebar-overlay {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+  `],
+})
+export class SidebarComponent {
+  @Input() isOpen = false;
+
+  navGroups: NavGroup[] = [
+    {
+      title: 'Principal',
+      items: [
+        { label: 'Dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4', route: '/' },
+        { label: 'Corpus', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', route: '/corpus' },
+        { label: 'Probabilidades', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', route: '/probabilities' },
+      ],
+    },
+    {
+      title: 'Herramientas',
+      items: [
+        { label: 'Viterbi', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z', route: '/viterbi' },
+        { label: 'Analisis', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01', route: '/analysis' },
+      ],
+    },
+    {
+      title: 'Referencia',
+      items: [
+        { label: 'Etiquetas EAGLES', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z', route: '/eagles' },
+        { label: 'Entregables', icon: 'M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', route: '/exports' },
+      ],
+    },
+  ];
+}
