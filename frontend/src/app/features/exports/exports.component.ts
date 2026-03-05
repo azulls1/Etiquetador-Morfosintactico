@@ -45,11 +45,11 @@ interface ChecklistItem {
                 Recomendado
               </span>
             </div>
-            <div class="flex flex-col md:flex-row items-center gap-6 p-8">
+            <div class="flex flex-col md:flex-row items-center gap-6 p-4 sm:p-8">
               <!-- Icono ZIP -->
-              <div class="flex-shrink-0 w-20 h-20 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center
+              <div class="flex-shrink-0 w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center
                           group-hover:scale-110 transition-transform duration-300">
-                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <svg class="w-7 h-7 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round"
                         d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
                 </svg>
@@ -225,7 +225,7 @@ interface ChecklistItem {
         </section>
 
         <!-- ── Lista de verificacion ──────────────────────────── -->
-        <section class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8">
+        <section class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 sm:p-8">
           <div class="flex items-center gap-3 mb-6">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center"
                  style="background-color: rgba(47,84,150,0.08);">

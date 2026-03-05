@@ -9,7 +9,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
   standalone: true,
   imports: [FormsModule, LoadingSpinnerComponent],
   template: `
-    <div class="space-y-8">
+    <div class="space-y-4 sm:space-y-6">
 
       <!-- ============================================================ -->
       <!-- ENCABEZADO                                                    -->
@@ -249,7 +249,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow overflow-hidden">
           <button
             (click)="toggleQuestion(0)"
-            class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+            class="w-full flex items-center justify-between px-4 sm:px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
             <div class="flex items-center gap-3">
               <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#2F5496] text-white text-sm font-bold shrink-0">1</span>
               <span class="text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -263,7 +263,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
             </svg>
           </button>
           @if (expandedQuestions[0]) {
-          <div class="px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
+          <div class="px-4 sm:px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
             <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 space-y-3">
               <p>
                 El etiquetado producido por el modelo HMM con algoritmo de Viterbi para esta oracion es, en general,
@@ -322,7 +322,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow overflow-hidden">
           <button
             (click)="toggleQuestion(1)"
-            class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+            class="w-full flex items-center justify-between px-4 sm:px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
             <div class="flex items-center gap-3">
               <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#2F5496] text-white text-sm font-bold shrink-0">2</span>
               <span class="text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -336,7 +336,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
             </svg>
           </button>
           @if (expandedQuestions[1]) {
-          <div class="px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
+          <div class="px-4 sm:px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
             <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 space-y-3">
               <p>
                 Esta oracion contiene las <strong>mismas palabras</strong> que la anterior pero en un
@@ -393,7 +393,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow overflow-hidden">
           <button
             (click)="toggleQuestion(2)"
-            class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+            class="w-full flex items-center justify-between px-4 sm:px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
             <div class="flex items-center gap-3">
               <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#2F5496] text-white text-sm font-bold shrink-0">3</span>
               <span class="text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -407,7 +407,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
             </svg>
           </button>
           @if (expandedQuestions[2]) {
-          <div class="px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
+          <div class="px-4 sm:px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
             <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 space-y-3">
               <p>
                 El etiquetador basado en HMM con algoritmo de Viterbi presenta las siguientes
@@ -471,7 +471,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow overflow-hidden">
           <button
             (click)="toggleQuestion(3)"
-            class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+            class="w-full flex items-center justify-between px-4 sm:px-6 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
             <div class="flex items-center gap-3">
               <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#2F5496] text-white text-sm font-bold shrink-0">4</span>
               <span class="text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -485,7 +485,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
             </svg>
           </button>
           @if (expandedQuestions[3]) {
-          <div class="px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
+          <div class="px-4 sm:px-6 pb-5 border-t border-gray-100 dark:border-gray-700 pt-4">
             <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 space-y-3">
               <p>
                 Para superar las limitaciones identificadas, se podrian aplicar las siguientes <strong>mejoras</strong>:

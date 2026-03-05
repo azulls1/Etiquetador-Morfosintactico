@@ -320,7 +320,7 @@ interface HistoryEntry {
                             (mouseleave)="matrixHoveredRow = null; matrixHoveredCol = null"
                             (click)="selectMatrixCell(tag, token, getMatrixValue(ci, tag))">
                           @if (getMatrixValue(ci, tag) !== null) {
-                            <span class="text-[9px] leading-[24px] font-medium">
+                            <span class="text-[11px] sm:text-[9px] leading-[24px] font-medium">
                               {{ formatScientific(getMatrixValue(ci, tag)!) }}
                             </span>
                             @if (getBackpointer(ci, tag); as bp) {
@@ -489,8 +489,8 @@ interface HistoryEntry {
 
           <!-- Differences table -->
           @if (comparisonDiffs.length > 0) {
-            <div class="border-t border-gray-100 dark:border-gray-700">
-              <table class="w-full text-xs">
+            <div class="border-t border-gray-100 dark:border-gray-700 overflow-x-auto">
+              <table class="min-w-full text-xs">
                 <thead>
                   <tr class="bg-orange-50/50 dark:bg-orange-900/10">
                     <th class="px-4 py-2 text-left font-semibold text-[9px] uppercase tracking-wider text-orange-600 dark:text-orange-400">Token</th>

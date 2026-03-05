@@ -129,7 +129,7 @@ interface SelectedCell {
       <!-- STATS STRIP                                             -->
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (modelStats) {
-        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4 stagger-children animate-fadeInUp"
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-4 stagger-children animate-fadeInUp"
              style="animation-delay: 40ms">
           @for (card of modelStatCards; track card.label) {
             <div class="card-base px-3 py-2.5 animate-fadeInUp">
@@ -144,7 +144,7 @@ interface SelectedCell {
                   </svg>
                 </span>
               </div>
-              <p class="text-lg font-semibold text-slate-800 dark:text-slate-100">{{ card.value }}</p>
+              <p class="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ card.value }}</p>
             </div>
           }
         </div>
@@ -174,7 +174,7 @@ interface SelectedCell {
                   placeholder="Filtrar..."
                   class="pl-8 pr-3 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
-                         focus:ring-2 focus:ring-[#2F5496]/30 focus:border-[#2F5496] w-36 transition"/>
+                         focus:ring-2 focus:ring-[#2F5496]/30 focus:border-[#2F5496] w-24 sm:w-36 transition"/>
                 <svg class="absolute left-2.5 top-2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -355,7 +355,7 @@ interface SelectedCell {
                   placeholder="Filtrar..."
                   class="pl-8 pr-3 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
-                         focus:ring-2 focus:ring-[#2F5496]/30 focus:border-[#2F5496] w-36 transition"/>
+                         focus:ring-2 focus:ring-[#2F5496]/30 focus:border-[#2F5496] w-24 sm:w-36 transition"/>
                 <svg class="absolute left-2.5 top-2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -421,7 +421,7 @@ interface SelectedCell {
                       </td>
                       <td class="px-3 py-1.5 text-right">
                         <div class="flex items-center justify-end gap-2">
-                          <div class="w-20 h-1.5 bg-gray-100 dark:bg-gray-600 rounded-full overflow-hidden">
+                          <div class="w-12 sm:w-20 h-1.5 bg-gray-100 dark:bg-gray-600 rounded-full overflow-hidden">
                             <div class="h-full rounded-full bg-gradient-to-r from-[#2F5496] to-[#3B82F6] transition-all duration-300"
                                  [style.width.%]="entry.probability * 100"></div>
                           </div>

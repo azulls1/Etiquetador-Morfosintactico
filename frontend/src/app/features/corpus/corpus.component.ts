@@ -100,7 +100,7 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
               </div>
             </div>
 
-            <div class="flex items-end gap-4">
+            <div class="flex flex-wrap items-end gap-4">
               <div class="flex-1 max-w-[200px]">
                 <label class="block text-xs font-medium text-gray-500 dark:text-gray-300 mb-1">Max. archivos</label>
                 <input
