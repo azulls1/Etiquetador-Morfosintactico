@@ -1,11 +1,11 @@
 {
   "framework_version": "3.6.0",
   "orchestrator_version": "3.6.0",
-  "current_phase": "desarrollo",
+  "current_phase": "produccion",
   "current_context": {
     "task": "Etiquetador Morfosintactico HMM Bigrama + Viterbi",
     "scale": "nivel_3",
-    "current_phase": "desarrollo",
+    "current_phase": "produccion",
     "current_agent": null,
     "completed_steps": [
       "analyst",
@@ -16,12 +16,11 @@
       "cybersec",
       "accessibility",
       "performance",
-      "docs"
-    ],
-    "pending_steps": [
+      "docs",
       "devops_deploy",
       "compliance_review"
     ],
+    "pending_steps": [],
     "artifacts": {
       "backend_api": "backend/main.py",
       "hmm_trainer": "backend/services/hmm_trainer.py",
@@ -37,7 +36,11 @@
       "exports_ui": "frontend/src/app/features/exports/exports.component.ts",
       "unit_tests": "backend/tests/",
       "docker_compose": "docker-compose.yml",
-      "readme": "README.md"
+      "readme": "README.md",
+      "nginx_conf": "frontend/nginx.conf",
+      "postcssrc": "frontend/.postcssrc.json",
+      "dockerfile_backend": "backend/Dockerfile",
+      "dockerfile_frontend": "frontend/Dockerfile"
     },
     "decisions": [
       {
@@ -68,6 +71,30 @@
         "id": "ADR-005",
         "title": "Corpus dir del servidor, no del cliente",
         "description": "Ignorar corpus_dir enviado por cliente por seguridad, usar siempre CORPUS_DIR del servidor",
+        "date": "2026-03-04"
+      },
+      {
+        "id": "ADR-006",
+        "title": "Probabilities page scrollable layout sin tabs",
+        "description": "Rediseno de la pagina de probabilidades: layout scrollable con stats dashboard, heatmap con crosshair hover, tablas con paginacion de 10 por pagina, sin tabs",
+        "date": "2026-03-04"
+      },
+      {
+        "id": "ADR-007",
+        "title": "Docker Swarm + Traefik para produccion",
+        "description": "Despliegue en VPS con Docker Swarm como orquestador y Traefik como reverse proxy con TLS automatico via Let's Encrypt. Dominio: etiqmorfsintac.iagentek.com.mx",
+        "date": "2026-03-04"
+      },
+      {
+        "id": "ADR-008",
+        "title": "PostCSS config requerido en produccion para Tailwind v4",
+        "description": "Tailwind CSS v4 requiere .postcssrc.json en el contexto de build de Docker para generar utility classes correctamente. Sin este archivo, el CSS se reduce de 91KB a 25KB y las clases utilitarias no se generan",
+        "date": "2026-03-04"
+      },
+      {
+        "id": "ADR-009",
+        "title": "nginx resolver para Docker Swarm DNS",
+        "description": "nginx en Docker Swarm requiere resolver 127.0.0.11 para resolver nombres de servicios internos. Tambien requiere listen en IPv4 solo (0.0.0.0:80) y healthcheck con curl en lugar de wget",
         "date": "2026-03-04"
       }
     ],
@@ -103,6 +130,18 @@
       "task": "Implementar 9 acciones prioritarias del reporte de agentes",
       "completed_at": "2026-03-04T00:00:00.000000",
       "agents": ["nxt-cybersec", "nxt-performance", "nxt-qa", "nxt-accessibility", "nxt-dev"]
+    },
+    {
+      "id": "task_20260304_probabilities_redesign",
+      "task": "Rediseno completo de la pagina de probabilidades: layout scrollable, stats dashboard (5 cards), 2-column grid (emission+transitions), heatmap hero, paginacion 10/page, dark mode, training feedback con banner animado y progress bar",
+      "completed_at": "2026-03-04T00:00:00.000000",
+      "agents": ["nxt-design", "nxt-dev"]
+    },
+    {
+      "id": "task_20260304_production_deploy",
+      "task": "Despliegue completo en produccion VPS (144.126.157.81) con Docker Swarm + Traefik. Resueltos: dependencias backend (requests, python-multipart), nginx DNS resolver + IPv4 binding + healthcheck, .postcssrc.json para Tailwind v4 CSS build, dashboard health endpoint (GET /health), CSP Google Fonts. Auditoria seguridad zero secretos expuestos. App live en https://etiqmorfsintac.iagentek.com.mx",
+      "completed_at": "2026-03-04T00:00:00.000000",
+      "agents": ["nxt-devops", "nxt-cybersec", "nxt-dev"]
     }
   ],
   "pending_tasks": [],
@@ -150,6 +189,83 @@
       "agent": "nxt-accessibility",
       "files": ["frontend/src/app/app.component.ts", "frontend/src/app/shared/components/sidebar/sidebar.component.ts"],
       "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "ui_redesign",
+      "task": "Probabilities page rediseno completo - scrollable layout, stats dashboard, heatmap crosshair, emission/transition tables con paginacion",
+      "agent": "nxt-design",
+      "files": ["frontend/src/app/features/probabilities/probabilities.component.ts"],
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "ux_improvement",
+      "task": "Training feedback: banner animado azul con shimmer y progress bar, success/error toast notifications",
+      "agent": "nxt-design",
+      "files": ["frontend/src/app/features/probabilities/probabilities.component.ts"],
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "changelog",
+      "task": "CHANGELOG.md actualizado con deployment a produccion v0.6.0: Docker Swarm, Traefik, Supabase, glassmorphism UI, security audit, deployment fixes",
+      "agent": "nxt-changelog",
+      "files": ["CHANGELOG.md", "docs/releases/v0.6.0.md"],
+      "timestamp": "2026-03-04T23:59:00.000000"
+    },
+    {
+      "type": "deployment",
+      "task": "Despliegue produccion Docker Swarm + Traefik en VPS 144.126.157.81",
+      "agent": "nxt-devops",
+      "details": {
+        "vps_ip": "144.126.157.81",
+        "domain": "etiqmorfsintac.iagentek.com.mx",
+        "protocol": "HTTPS (Let's Encrypt TLS)",
+        "orchestrator": "Docker Swarm",
+        "reverse_proxy": "Traefik v2",
+        "services": ["backend (FastAPI)", "frontend (Angular + nginx)"]
+      },
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "deployment_fix",
+      "task": "Backend: agregar requests y python-multipart a requirements.txt",
+      "agent": "nxt-dev",
+      "file": "backend/requirements.txt",
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "deployment_fix",
+      "task": "Frontend nginx: resolver 127.0.0.11 para Docker DNS, listen 0.0.0.0:80 IPv4, healthcheck con curl",
+      "agent": "nxt-devops",
+      "file": "frontend/nginx.conf",
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "deployment_fix",
+      "task": "Frontend CSS: agregar .postcssrc.json al build Docker para que Tailwind v4 genere utility classes (91KB vs 25KB sin el archivo)",
+      "agent": "nxt-dev",
+      "file": "frontend/.postcssrc.json",
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "deployment_fix",
+      "task": "Dashboard health check: cambiar GET / a GET /health para verificar backend",
+      "agent": "nxt-dev",
+      "file": "frontend/src/app/features/dashboard/dashboard.component.ts",
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "deployment_fix",
+      "task": "CSP: permitir Google Fonts (fonts.googleapis.com, fonts.gstatic.com) en Content-Security-Policy",
+      "agent": "nxt-cybersec",
+      "file": "frontend/nginx.conf",
+      "timestamp": "2026-03-04T00:00:00.000000"
+    },
+    {
+      "type": "security_audit",
+      "task": "Auditoria de seguridad post-deploy: zero secretos expuestos confirmado",
+      "agent": "nxt-cybersec",
+      "result": "PASS - no secrets in codebase",
+      "timestamp": "2026-03-04T00:00:00.000000"
     }
   ],
   "session_history": [
@@ -160,6 +276,29 @@
       "tasks_completed": 5,
       "files_modified": 12,
       "files_created": 10
+    },
+    {
+      "session_id": "session_20260304_002",
+      "started_at": "2026-03-04T00:00:00.000000",
+      "summary": "Rediseno completo pagina de probabilidades: removed tabs, added scrollable layout with stats dashboard (5 cards), 2-column grid (emission left, transitions right), full-width heatmap hero with crosshair hover, emission/transition tables with pagination (10/page), dark mode support. Added training feedback: animated blue banner with shimmer effect and progress bar during training, success/error toast. Verified all backend endpoints working (emission table, transition table, train). Data stats: 3.2M vocabulary, 3.4M emission pairs, 34K transition pairs, 414 tags. Data persists in pickle cache (backend/cache/*.pkl) and Supabase remote DB. Build verified successful.",
+      "tasks_completed": 1,
+      "files_modified": 1,
+      "files_created": 0,
+      "primary_file": "frontend/src/app/features/probabilities/probabilities.component.ts"
+    },
+    {
+      "session_id": "session_20260304_003",
+      "started_at": "2026-03-04T00:00:00.000000",
+      "summary": "Despliegue completo en produccion VPS (144.126.157.81) con Docker Swarm + Traefik. Problemas resueltos: (1) backend faltaban dependencias requests y python-multipart en requirements.txt, (2) frontend nginx resolver DNS 127.0.0.11, binding IPv4 0.0.0.0:80, healthcheck con curl, (3) frontend CSS faltaba .postcssrc.json causando que Tailwind v4 no generara utility classes (25KB vs 91KB), (4) dashboard health check llamaba GET / en vez de GET /health, (5) CSP bloqueaba Google Fonts. Se hizo commit, push a GitHub, git clone limpio en VPS, rebuild y redeploy. App funcionando en https://etiqmorfsintac.iagentek.com.mx. Auditoria de seguridad confirmo zero secretos expuestos.",
+      "tasks_completed": 1,
+      "files_modified": 8,
+      "files_created": 1,
+      "deployment": {
+        "vps_ip": "144.126.157.81",
+        "domain": "etiqmorfsintac.iagentek.com.mx",
+        "status": "live",
+        "stack": "Docker Swarm + Traefik + nginx + FastAPI"
+      }
     }
   ],
   "registries": {
@@ -207,5 +346,75 @@
     ],
     "always_trigger_includes_all": true
   },
-  "last_updated": "2026-03-04T12:00:00.000000"
+  "project_data": {
+    "corpus_stats": {
+      "vocabulary_size": "3.2M",
+      "emission_pairs": "3.4M",
+      "transition_pairs": "34K",
+      "tag_count": 414
+    },
+    "data_persistence": {
+      "local_cache": "backend/cache/*.pkl",
+      "remote_db": "Supabase"
+    },
+    "tech_stack": {
+      "frontend": "Angular 19 standalone + Tailwind CSS v4",
+      "backend": "Python FastAPI",
+      "database": "Supabase (PostgreSQL)",
+      "dev_servers": {
+        "frontend": "localhost:4200",
+        "backend": "localhost:8000"
+      },
+      "production": {
+        "domain": "etiqmorfsintac.iagentek.com.mx",
+        "vps_ip": "144.126.157.81",
+        "orchestrator": "Docker Swarm",
+        "reverse_proxy": "Traefik v2 (auto TLS via Let's Encrypt)",
+        "web_server": "nginx (frontend static files)",
+        "protocol": "HTTPS"
+      },
+      "primary_color": "#2F5496",
+      "accent_color": "#f97316"
+    }
+  },
+  "deployment": {
+    "status": "live",
+    "environment": "production",
+    "url": "https://etiqmorfsintac.iagentek.com.mx",
+    "vps_ip": "144.126.157.81",
+    "infrastructure": {
+      "orchestrator": "Docker Swarm",
+      "reverse_proxy": "Traefik v2",
+      "tls": "Let's Encrypt (automatic)",
+      "services": {
+        "backend": {
+          "image": "custom FastAPI",
+          "port": 8000,
+          "healthcheck": "GET /health"
+        },
+        "frontend": {
+          "image": "custom Angular + nginx",
+          "port": 80,
+          "healthcheck": "curl -f http://localhost:80/"
+        }
+      }
+    },
+    "issues_resolved": [
+      "Backend missing dependencies: requests, python-multipart",
+      "nginx DNS resolver for Docker Swarm (127.0.0.11)",
+      "nginx IPv4 binding (0.0.0.0:80 instead of default IPv6)",
+      "nginx healthcheck: curl instead of wget",
+      ".postcssrc.json missing in Docker build context (Tailwind v4 CSS 25KB vs 91KB)",
+      "Dashboard health check: GET / changed to GET /health",
+      "CSP blocking Google Fonts: added fonts.googleapis.com and fonts.gstatic.com"
+    ],
+    "security_audit": {
+      "status": "PASS",
+      "secrets_exposed": 0,
+      "date": "2026-03-04"
+    },
+    "deployed_at": "2026-03-04T00:00:00.000000"
+  },
+  "last_checkpoint": "cp_20260304_210000",
+  "last_updated": "2026-03-04T21:00:00.000000"
 }
