@@ -1,11 +1,13 @@
 """Endpoints de probabilidades de emisión y transición."""
 
 import logging
+from typing import Literal
+
 from fastapi import APIRouter, HTTPException, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-from models.schemas import ProbabilityResponse, StatusResponse
+from models.schemas import ProbabilityResponse, ProbabilityTableResponse, StatusResponse
 from services import hmm_trainer
 from services.corpus_parser import get_corpus_data
 from models import database
@@ -17,7 +19,7 @@ router = APIRouter(prefix="/api/probabilities", tags=["Probabilidades"])
 
 @router.post("/train", response_model=StatusResponse)
 @limiter.limit("5/minute")
-async def train_model(request: Request, smoothing: float = 1.0):
+def train_model(request: Request, smoothing: float = 1.0):
     """Calcula las probabilidades de emisión y transición.
 
     Query params:
@@ -32,6 +34,10 @@ async def train_model(request: Request, smoothing: float = 1.0):
             database.save_transition_probs(
                 data_from_corpus["transition_counts"],
                 result["transition_probs"],
+            )
+            database.save_emission_probs(
+                data_from_corpus["emission_counts"],
+                result["emission_probs"],
             )
 
         return StatusResponse(
@@ -64,7 +70,7 @@ async def get_emission_probs(tag: str = None, limit: int = 20):
 
 
 @router.get("/transition", response_model=ProbabilityResponse)
-async def get_transition_probs(tag: str = None, direction: str = "from", limit: int = 20):
+async def get_transition_probs(tag: str = None, direction: Literal["from", "to"] = "from", limit: int = 20):
     """Retorna probabilidades de transición.
 
     Query params:
@@ -87,7 +93,7 @@ async def get_transition_probs(tag: str = None, direction: str = "from", limit: 
     return ProbabilityResponse(total_entries=len(table), entries=limited)
 
 
-@router.get("/emission/table")
+@router.get("/emission/table", response_model=ProbabilityTableResponse)
 async def get_emission_table(top_n: int = 30):
     """Retorna la tabla completa de emisión para exportación."""
     table = hmm_trainer.get_emission_table(top_n)
@@ -96,7 +102,7 @@ async def get_emission_table(top_n: int = 30):
     return {"entries": table}
 
 
-@router.get("/transition/table")
+@router.get("/transition/table", response_model=ProbabilityTableResponse)
 async def get_transition_table():
     """Retorna la tabla completa de transición para exportación."""
     table = hmm_trainer.get_transition_table()

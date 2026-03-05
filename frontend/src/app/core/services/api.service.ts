@@ -19,6 +19,22 @@ export class ApiService {
     return this.http.post<StatusResponse>(`${this.baseUrl}/api/corpus/upload`, request);
   }
 
+  uploadCorpusFile(file: File): Observable<StatusResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<StatusResponse>(`${this.baseUrl}/api/corpus/upload-file`, formData);
+  }
+
+  processCorpus(maxFiles?: number): Observable<StatusResponse> {
+    let params = new HttpParams();
+    if (maxFiles) params = params.set('max_files', maxFiles);
+    return this.http.post<StatusResponse>(`${this.baseUrl}/api/corpus/process`, null, { params });
+  }
+
+  scanCorpusDir(): Observable<StatusResponse> {
+    return this.http.get<StatusResponse>(`${this.baseUrl}/api/corpus/scan`);
+  }
+
   getUploadStatus(): Observable<StatusResponse> {
     return this.http.get<StatusResponse>(`${this.baseUrl}/api/corpus/upload/status`);
   }
@@ -28,7 +44,8 @@ export class ApiService {
   }
 
   searchWord(word: string, limit = 20): Observable<CorpusSearchResult> {
-    return this.http.post<CorpusSearchResult>(`${this.baseUrl}/api/corpus/search`, { word, limit });
+    const params = new HttpParams().set('word', word).set('limit', limit);
+    return this.http.get<CorpusSearchResult>(`${this.baseUrl}/api/corpus/search`, { params });
   }
 
   getTagDistribution(): Observable<TagDistribution> {

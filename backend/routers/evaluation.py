@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
+from models.schemas import EvaluationResult
 from services import evaluation
 
 logger = logging.getLogger(__name__)
@@ -12,9 +13,9 @@ limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/api/evaluation", tags=["Evaluacion"])
 
 
-@router.post("/evaluate")
+@router.post("/evaluate", response_model=EvaluationResult)
 @limiter.limit("5/minute")
-async def run_evaluation(
+def run_evaluation(
     request: Request,
     test_ratio: float = Query(0.1, ge=0.01, le=0.5, description="Proporcion del corpus para test (0.01-0.5)"),
     smoothing: float = Query(1.0, ge=0.0, le=10.0, description="Parametro alpha de Laplace"),
@@ -44,7 +45,7 @@ async def run_evaluation(
             top_n_tags=top_n_tags,
         )
         return result
-    except FileNotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except RuntimeError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Corpus no encontrado. Verifique que esté disponible.")
+    except RuntimeError:
+        raise HTTPException(status_code=400, detail="Error al ejecutar la evaluación. Verifique que el corpus esté procesado.")

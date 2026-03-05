@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  backend:
+    image: etiqmorfsintac-backend:latest
+    environment:
+      - ENV=production
+      - CORPUS_DIR=/app/corpus
+      - EXPORTS_DIR=/app/exports
+      - CACHE_DIR=/app/cache
+      - SUPABASE_URL=https://supabase-maestria.iagentek.com.mx
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    volumes:
+      - backend-cache:/app/cache
+      - backend-exports:/app/exports
+    networks:
+      - internal
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 2G
+          cpus: "1.5"
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 5
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  frontend:
+    image: etiqmorfsintac-frontend:latest
+    networks:
+      - internal
+      - iagenteknet
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 5
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=iagenteknet"
+        - "traefik.http.routers.etiqmorfsintac.rule=Host(`etiqmorfsintac.iagentek.com.mx`)"
+        - "traefik.http.routers.etiqmorfsintac.entrypoints=websecure"
+        - "traefik.http.routers.etiqmorfsintac.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.etiqmorfsintac.service=etiqmorfsintac"
+        - "traefik.http.services.etiqmorfsintac.loadbalancer.server.port=80"
+
+volumes:
+  backend-cache:
+  backend-exports:
+
+networks:
+  internal:
+    driver: overlay
+  iagenteknet:
+    external: true

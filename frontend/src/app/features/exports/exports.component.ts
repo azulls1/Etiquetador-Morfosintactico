@@ -29,9 +29,9 @@ interface ChecklistItem {
             Centro de Descargas
           </div>
           <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Entregables de la Actividad</h1>
-          <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto text-base lg:text-lg">
+          <p class="text-gray-500 dark:text-gray-300 max-w-2xl mx-auto text-base lg:text-lg">
             Descarga todos los archivos necesarios para la entrega de la
-            <span class="font-semibold text-gray-700">Actividad 1: Etiquetado Morfosintactico</span>
+            <span class="font-semibold text-gray-700 dark:text-gray-200">Actividad 1: Etiquetado Morfosintactico</span>
           </p>
         </header>
 
@@ -41,7 +41,7 @@ interface ChecklistItem {
              class="group relative block rounded-2xl border-2 overflow-hidden transition-all duration-300 hover:shadow-xl"
              style="border-color: #2F5496; background: linear-gradient(135deg, #2F5496 0%, #1e3a6e 100%);">
             <div class="absolute top-4 right-4">
-              <span class="px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-amber-400 text-gray-900">
+              <span class="px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-blue-400 text-white">
                 Recomendado
               </span>
             </div>
@@ -99,7 +99,7 @@ interface ChecklistItem {
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="text-base font-bold text-gray-900 dark:text-gray-100">Jupyter Notebook (.ipynb)</h3>
-                <p class="mt-1.5 text-sm text-gray-500 leading-relaxed">
+                <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-300 leading-relaxed">
                   Notebook completo con codigo Python, resultados y respuestas a las preguntas. Autocontenido y ejecutable.
                 </p>
               </div>
@@ -124,14 +124,14 @@ interface ChecklistItem {
             <div class="flex items-start gap-4">
               <div class="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center bg-[#2F5496]/8
                           group-hover:scale-110 transition-transform duration-300">
-                <svg class="w-7 h-7 text-[#2F5496]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <svg class="w-7 h-7 text-[#2F5496] dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round"
                         d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M10.875 12c-.621 0-1.125.504-1.125 1.125M12 12c.621 0 1.125.504 1.125 1.125m0 0v1.5c0 .621-.504 1.125-1.125 1.125M12 15.75c-.621 0-1.125-.504-1.125-1.125m0 0v-1.5c0-.621.504-1.125 1.125-1.125" />
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="text-base font-bold text-gray-900 dark:text-gray-100">Excel - Tabla de Emision (.xlsx)</h3>
-                <p class="mt-1.5 text-sm text-gray-500 leading-relaxed">
+                <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-300 leading-relaxed">
                   Probabilidades de emision P(palabra|etiqueta) calculadas del Wikicorpus.
                 </p>
               </div>
@@ -155,14 +155,14 @@ interface ChecklistItem {
             <div class="flex items-start gap-4">
               <div class="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center bg-[#2F5496]/8
                           group-hover:scale-110 transition-transform duration-300">
-                <svg class="w-7 h-7 text-[#2F5496]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <svg class="w-7 h-7 text-[#2F5496] dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round"
                         d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="text-base font-bold text-gray-900 dark:text-gray-100">Excel - Tabla de Transicion (.xlsx)</h3>
-                <p class="mt-1.5 text-sm text-gray-500 leading-relaxed">
+                <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-300 leading-relaxed">
                   Probabilidades de transicion P(etiqueta_i|etiqueta_{{'{'}}{{'i-1'}}{{'}'}}
                   ) y matriz de transicion.
                 </p>
@@ -194,9 +194,9 @@ interface ChecklistItem {
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="text-base font-bold text-gray-900 dark:text-gray-100">Excel - Matriz de Viterbi (.xlsx)</h3>
-                <p class="mt-1.5 text-sm text-gray-500 leading-relaxed">
+                <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-300 leading-relaxed">
                   Matriz de Viterbi para la oracion
-                  <em class="text-gray-600">"Habla con el enfermo grave de trasplantes."</em>
+                  <em class="text-gray-600 dark:text-gray-300">"Habla con el enfermo grave de trasplantes."</em>
                 </p>
               </div>
             </div>
@@ -236,7 +236,7 @@ interface ChecklistItem {
             </div>
             <div>
               <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">Lista de Verificacion</h2>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Requisitos de la actividad que deben estar incluidos en la entrega</p>
+              <p class="text-sm text-gray-500 dark:text-gray-300">Requisitos de la actividad que deben estar incluidos en la entrega</p>
             </div>
           </div>
 
@@ -251,7 +251,7 @@ interface ChecklistItem {
                        class="w-5 h-5 rounded border-gray-300 transition-colors cursor-pointer"
                        style="accent-color: #2F5496;" />
               </div>
-              <span class="text-sm leading-relaxed"
+              <span class="text-sm leading-relaxed dark:text-gray-300"
                     [class.text-gray-700]="!item.checked"
                     [class.text-green-800]="item.checked"
                     [class.font-medium]="item.checked">
@@ -262,9 +262,9 @@ interface ChecklistItem {
           </div>
 
           <!-- Barra de progreso -->
-          <div class="mt-6 pt-6 border-t border-gray-100">
+          <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-medium text-gray-600">Progreso de verificacion</span>
+              <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Progreso de verificacion</span>
               <span class="text-sm font-bold" style="color: #2F5496;">
                 {{ checkedCount }} / {{ checklist.length }}
               </span>

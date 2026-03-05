@@ -7,10 +7,14 @@ import { Component, Input } from '@angular/core';
   template: `
     @if (loading) {
       <div class="flex flex-col items-center justify-center py-12" role="status" aria-live="polite">
-        <div class="w-12 h-12 border-4 border-[#2F5496]/30 border-t-[#2F5496] rounded-full animate-spin" aria-hidden="true"></div>
+        <div class="flex items-center gap-1.5" aria-hidden="true">
+          <span class="dot dot-1"></span>
+          <span class="dot dot-2"></span>
+          <span class="dot dot-3"></span>
+        </div>
         <span class="sr-only">Cargando...</span>
         @if (message) {
-          <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">{{ message }}</p>
+          <p class="mt-4 text-sm text-slate-400 dark:text-slate-500 font-light">{{ message }}</p>
         }
       </div>
     }
@@ -26,6 +30,27 @@ import { Component, Input } from '@angular/core';
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border-width: 0;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3B82F6;
+      animation: pulseDot 1.4s ease-in-out infinite;
+    }
+    .dot-1 { animation-delay: 0s; }
+    .dot-2 { animation-delay: 0.16s; }
+    .dot-3 { animation-delay: 0.32s; }
+
+    @keyframes pulseDot {
+      0%, 80%, 100% {
+        opacity: 0.25;
+        transform: scale(0.75);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
   `],
 })

@@ -15,8 +15,8 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
       <!-- ENCABEZADO                                                    -->
       <!-- ============================================================ -->
       <div>
-        <h1 class="text-2xl font-bold text-[#2F5496]">Parte 3: Analisis Comparativo y Preguntas</h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <h1 class="text-2xl font-bold text-[#2F5496] dark:text-blue-300">Parte 3: Analisis Comparativo y Preguntas</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">
           Analisis del etiquetado morfosintactico de las oraciones requeridas, evaluacion de resultados,
           limitaciones del etiquetador HMM y propuestas de mejora.
         </p>
@@ -27,7 +27,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
       <!-- ============================================================ -->
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 space-y-5">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Etiquetado comparativo</h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400">
+        <p class="text-xs text-gray-500 dark:text-gray-300">
           Etiqueta ambas oraciones para comparar como el contexto (orden de palabras) afecta las probabilidades
           de transicion y, por tanto, las etiquetas asignadas por el algoritmo de Viterbi.
         </p>
@@ -37,9 +37,9 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
           <button
             (click)="tagSentenceA()"
             [disabled]="loadingA"
-            class="flex-1 rounded-lg border-2 border-[#2F5496] px-5 py-3 text-sm font-semibold transition
+            class="flex-1 rounded-lg border-2 border-[#2F5496] dark:border-blue-400 px-5 py-3 text-sm font-semibold transition
                    disabled:opacity-50 disabled:cursor-not-allowed"
-            [class]="resultA ? 'bg-[#2F5496] text-white' : 'bg-white dark:bg-gray-700 text-[#2F5496] dark:text-blue-300 hover:bg-[#2F5496]/10'">
+            [class]="resultA ? 'bg-[#2F5496] text-white' : 'bg-white dark:bg-gray-700 text-[#2F5496] dark:text-blue-300 dark:text-blue-300 hover:bg-[#2F5496]/10 dark:bg-blue-500/15'">
             @if (loadingA) {
               <span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 align-middle"></span>
             }
@@ -54,9 +54,9 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
           <button
             (click)="tagSentenceB()"
             [disabled]="loadingB"
-            class="flex-1 rounded-lg border-2 border-[#2F5496] px-5 py-3 text-sm font-semibold transition
+            class="flex-1 rounded-lg border-2 border-[#2F5496] dark:border-blue-400 px-5 py-3 text-sm font-semibold transition
                    disabled:opacity-50 disabled:cursor-not-allowed"
-            [class]="resultB ? 'bg-[#2F5496] text-white' : 'bg-white dark:bg-gray-700 text-[#2F5496] dark:text-blue-300 hover:bg-[#2F5496]/10'">
+            [class]="resultB ? 'bg-[#2F5496] text-white' : 'bg-white dark:bg-gray-700 text-[#2F5496] dark:text-blue-300 dark:text-blue-300 hover:bg-[#2F5496]/10 dark:bg-blue-500/15'">
             @if (loadingB) {
               <span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 align-middle"></span>
             }
@@ -101,52 +101,52 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Oracion A -->
             <div class="space-y-3 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
-              <h3 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300">Oracion 1</h3>
-              <p class="text-xs text-gray-500 dark:text-gray-400 italic">&laquo;{{ resultA.sentence }}&raquo;</p>
+              <h3 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 dark:text-blue-300">Oracion 1</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-300 italic">&laquo;{{ resultA.sentence }}&raquo;</p>
               <div class="flex flex-wrap gap-2">
                 @for (token of resultA.tokens; track $index; let i = $index) {
                   <div
                     class="flex flex-col items-center gap-1 rounded-lg px-3 py-2 border"
-                    [class]="isDifferentTag(token, resultA.tags[i], 'A') ? 'border-orange-300 bg-orange-50 dark:border-orange-600 dark:bg-orange-900/20' : 'border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700/50'">
+                    [class]="isDifferentTag(token, resultA.tags[i], 'A') ? 'border-blue-300 bg-blue-50 dark:border-blue-600 dark:bg-blue-900/20' : 'border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700/50'">
                     <span class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ token }}</span>
                     <span
                       class="inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white"
                       [style.background-color]="getTagColor(resultA.tags[i])">
                       {{ resultA.tags[i] }}
                     </span>
-                    <span class="text-xs text-gray-500 dark:text-gray-400 text-center max-w-[120px] leading-tight">
+                    <span class="text-xs text-gray-500 dark:text-gray-300 text-center max-w-[120px] leading-tight">
                       {{ resultA.descriptions[i] }}
                     </span>
                   </div>
                 }
               </div>
-              <p class="text-xs font-mono text-gray-400">
+              <p class="text-xs font-mono text-gray-400 dark:text-gray-300">
                 P(mejor camino) = {{ formatScientific(resultA.best_path_prob) }}
               </p>
             </div>
 
             <!-- Oracion B -->
             <div class="space-y-3 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
-              <h3 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300">Oracion 2</h3>
-              <p class="text-xs text-gray-500 dark:text-gray-400 italic">&laquo;{{ resultB.sentence }}&raquo;</p>
+              <h3 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 dark:text-blue-300">Oracion 2</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-300 italic">&laquo;{{ resultB.sentence }}&raquo;</p>
               <div class="flex flex-wrap gap-2">
                 @for (token of resultB.tokens; track $index; let i = $index) {
                   <div
                     class="flex flex-col items-center gap-1 rounded-lg px-3 py-2 border"
-                    [class]="isDifferentTag(token, resultB.tags[i], 'B') ? 'border-orange-300 bg-orange-50 dark:border-orange-600 dark:bg-orange-900/20' : 'border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700/50'">
+                    [class]="isDifferentTag(token, resultB.tags[i], 'B') ? 'border-blue-300 bg-blue-50 dark:border-blue-600 dark:bg-blue-900/20' : 'border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700/50'">
                     <span class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ token }}</span>
                     <span
                       class="inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white"
                       [style.background-color]="getTagColor(resultB.tags[i])">
                       {{ resultB.tags[i] }}
                     </span>
-                    <span class="text-xs text-gray-500 dark:text-gray-400 text-center max-w-[120px] leading-tight">
+                    <span class="text-xs text-gray-500 dark:text-gray-300 text-center max-w-[120px] leading-tight">
                       {{ resultB.descriptions[i] }}
                     </span>
                   </div>
                 }
               </div>
-              <p class="text-xs font-mono text-gray-400">
+              <p class="text-xs font-mono text-gray-400 dark:text-gray-300">
                 P(mejor camino) = {{ formatScientific(resultB.best_path_prob) }}
               </p>
             </div>
@@ -155,10 +155,10 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
           <!-- Tabla de diferencias -->
           <div class="space-y-3">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Tabla comparativa de etiquetas</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
+            <p class="text-xs text-gray-500 dark:text-gray-300">
               Las filas resaltadas en
-              <span class="inline-block w-3 h-3 rounded bg-orange-200 dark:bg-orange-700 align-middle mx-0.5"></span>
-              naranja indican diferencias en la etiqueta asignada al mismo token segun el contexto oracional.
+              <span class="inline-block w-3 h-3 rounded bg-blue-200 dark:bg-blue-700 align-middle mx-0.5"></span>
+              azul indican diferencias en la etiqueta asignada al mismo token segun el contexto oracional.
             </p>
             <div class="overflow-x-auto">
               <table class="min-w-full text-xs border-collapse">
@@ -174,7 +174,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
                 <tbody>
                   @for (row of comparisonTable; track row.token) {
                   <tr class="border-b border-gray-100 dark:border-gray-700"
-                      [class]="row.isDifferent ? 'bg-orange-50 dark:bg-orange-900/20' : 'bg-white dark:bg-gray-800'">
+                      [class]="row.isDifferent ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-white dark:bg-gray-800'">
                     <td class="px-4 py-2 font-semibold text-gray-800 dark:text-gray-100">{{ row.token }}</td>
                     <td class="px-4 py-2 text-center">
                       <span class="inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white"
@@ -182,14 +182,14 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
                         {{ row.tagA || '--' }}
                       </span>
                     </td>
-                    <td class="px-4 py-2 text-center text-gray-600 dark:text-gray-400">{{ row.descA || '--' }}</td>
+                    <td class="px-4 py-2 text-center text-gray-600 dark:text-gray-300">{{ row.descA || '--' }}</td>
                     <td class="px-4 py-2 text-center">
                       <span class="inline-block rounded-full px-2 py-0.5 text-xs font-bold text-white"
                             [style.background-color]="getTagColor(row.tagB)">
                         {{ row.tagB || '--' }}
                       </span>
                     </td>
-                    <td class="px-4 py-2 text-center text-gray-600 dark:text-gray-400">{{ row.descB || '--' }}</td>
+                    <td class="px-4 py-2 text-center text-gray-600 dark:text-gray-300">{{ row.descB || '--' }}</td>
                   </tr>
                   }
                 </tbody>
@@ -199,12 +199,12 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
 
           <!-- Resumen de diferencias -->
           @if (diffCount > 0) {
-            <div class="flex items-center gap-2 p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800">
-              <svg class="w-4 h-4 text-orange-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-center gap-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+              <svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span class="text-xs text-orange-700 dark:text-orange-300 font-medium">
+              <span class="text-xs text-blue-700 dark:text-blue-300 font-medium">
                 Se encontraron {{ diffCount }} diferencia(s) en las etiquetas asignadas a los mismos tokens.
                 Esto demuestra como el contexto oracional afecta las probabilidades de transicion del modelo HMM.
               </span>
@@ -226,7 +226,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
 
         <!-- Mensaje cuando aun no se ha etiquetado -->
         @if ((!resultA || !resultB) && !loadingA && !loadingB && !error) {
-          <div class="text-center py-8 text-gray-400 dark:text-gray-500">
+          <div class="text-center py-8 text-gray-400 dark:text-gray-300">
             <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -241,7 +241,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
       <!-- ============================================================ -->
       <div class="space-y-4">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Preguntas y Respuestas</h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400">
+        <p class="text-xs text-gray-500 dark:text-gray-300">
           Respuestas razonadas a las preguntas del apartado 3 de la actividad.
         </p>
 
@@ -256,7 +256,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
                 Es correcto el etiquetado de &laquo;Habla con el enfermo grave de trasplantes.&raquo;?
               </span>
             </div>
-            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0"
+            <svg class="w-5 h-5 text-gray-400 dark:text-gray-300 transition-transform duration-200 shrink-0"
                  [class.rotate-180]="expandedQuestions[0]"
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -329,7 +329,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
                 Etiqueta &laquo;El enfermo grave habla de trasplantes.&raquo; y evalua si es correcto
               </span>
             </div>
-            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0"
+            <svg class="w-5 h-5 text-gray-400 dark:text-gray-300 transition-transform duration-200 shrink-0"
                  [class.rotate-180]="expandedQuestions[1]"
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -400,7 +400,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
                 Cuales son las limitaciones del etiquetador?
               </span>
             </div>
-            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0"
+            <svg class="w-5 h-5 text-gray-400 dark:text-gray-300 transition-transform duration-200 shrink-0"
                  [class.rotate-180]="expandedQuestions[2]"
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -478,7 +478,7 @@ import { ViterbiResult } from '../../core/models/viterbi.model';
                 Que mejoras se podrian aplicar?
               </span>
             </div>
-            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0"
+            <svg class="w-5 h-5 text-gray-400 dark:text-gray-300 transition-transform duration-200 shrink-0"
                  [class.rotate-180]="expandedQuestions[3]"
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -596,7 +596,7 @@ export class AnalysisComponent {
     I: '#f43f5e', // Interjec.   - rose
     N: '#2F5496', // Nombre      - UNIR blue
     P: '#14b8a6', // Pronombre   - teal
-    R: '#f59e0b', // Adverbio    - amber
+    R: '#0ea5e9', // Adverbio    - sky
     S: '#10b981', // Preposicion - emerald
     V: '#ef4444', // Verbo       - red
     W: '#a855f7', // Fecha       - purple

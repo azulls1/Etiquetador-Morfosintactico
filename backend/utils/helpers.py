@@ -1,5 +1,7 @@
 """Funciones auxiliares."""
 
+import hashlib
+import hmac
 import json
 import pickle
 import logging
@@ -10,13 +12,25 @@ from config import CACHE_DIR
 
 logger = logging.getLogger(__name__)
 
+# Clave para firmar caches (derivada del path del proyecto, no es un secreto criptográfico
+# sino una protección contra inyección accidental de pickles maliciosos)
+_CACHE_HMAC_KEY = hashlib.sha256(str(CACHE_DIR.resolve()).encode()).digest()
+
+
+def _compute_hmac(data: bytes) -> str:
+    """Calcula HMAC-SHA256 de los datos."""
+    return hmac.new(_CACHE_HMAC_KEY, data, hashlib.sha256).hexdigest()
+
 
 def save_cache(name: str, data: Any) -> bool:
-    """Guarda datos en caché local usando pickle."""
+    """Guarda datos en caché local usando pickle con firma HMAC."""
     try:
         path = CACHE_DIR / f"{name}.pkl"
+        sig_path = CACHE_DIR / f"{name}.sig"
+        payload = pickle.dumps(data, protocol=pickle.HIGHEST_PROTOCOL)
         with open(path, "wb") as f:
-            pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
+            f.write(payload)
+        sig_path.write_text(_compute_hmac(payload))
         logger.info(f"Caché guardado: {path} ({path.stat().st_size / 1024 / 1024:.1f} MB)")
         return True
     except Exception as e:
@@ -25,13 +39,28 @@ def save_cache(name: str, data: Any) -> bool:
 
 
 def load_cache(name: str) -> Any:
-    """Carga datos de caché local."""
+    """Carga datos de caché local verificando firma HMAC."""
     path = CACHE_DIR / f"{name}.pkl"
+    sig_path = CACHE_DIR / f"{name}.sig"
     if not path.exists():
         return None
     try:
-        with open(path, "rb") as f:
-            data = pickle.load(f)
+        payload = path.read_bytes()
+        # Verificar firma HMAC
+        if sig_path.exists():
+            expected = sig_path.read_text().strip()
+            actual = _compute_hmac(payload)
+            if not hmac.compare_digest(expected, actual):
+                logger.error(f"Firma HMAC inválida para caché {name}. Archivo posiblemente alterado.")
+                return None
+        else:
+            # Legacy: cargar sin firma y re-firmar para futuras cargas
+            logger.warning(f"Sin firma HMAC para caché {name}. Cargando y firmando.")
+            data = pickle.loads(payload)
+            sig_path.write_text(_compute_hmac(payload))
+            logger.info(f"Caché legacy firmado: {path}")
+            return data
+        data = pickle.loads(payload)
         logger.info(f"Caché cargado: {path}")
         return data
     except Exception as e:

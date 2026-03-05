@@ -13,14 +13,76 @@ logger = logging.getLogger(__name__)
 
 # Estado global del corpus procesado
 _corpus_data: Optional[dict] = None
+_word_index: Optional[dict[str, dict[str, int]]] = None  # word -> {tag: count}
 
 
 def get_corpus_data() -> Optional[dict]:
-    """Retorna los datos del corpus procesado (singleton)."""
+    """Retorna los datos del corpus procesado (singleton).
+
+    Cadena de carga: cache local → Supabase → None.
+    """
     global _corpus_data
-    if _corpus_data is None:
-        _corpus_data = load_cache("corpus_data")
+    if _corpus_data is not None:
+        return _corpus_data
+
+    _corpus_data = load_cache("corpus_data")
+    if _corpus_data is not None:
+        return _corpus_data
+
+    # Fallback: reconstruir desde Supabase
+    _corpus_data = _load_corpus_from_supabase()
+    if _corpus_data is not None:
+        save_cache("corpus_data", _corpus_data)
+        logger.info("corpus_data restaurado desde Supabase")
     return _corpus_data
+
+
+def _load_corpus_from_supabase() -> Optional[dict]:
+    """Reconstruye corpus_data a partir de las tablas de Supabase."""
+    from models import database
+
+    tag_counts = database.load_tag_counts()
+    if not tag_counts:
+        return None
+
+    emission_counts: dict = {}
+    emission_result = database.load_emission_probs()
+    if emission_result:
+        emission_counts, _ = emission_result
+
+    transition_counts: dict = {}
+    transition_result = database.load_transition_probs()
+    if transition_result:
+        transition_counts, _ = transition_result
+
+    # Reconstruir word_counts sumando emisiones por palabra
+    word_counts: dict[str, int] = {}
+    for (tag, word), count in emission_counts.items():
+        word_counts[word] = word_counts.get(word, 0) + count
+
+    # Stats: preferir corpus_stats de Supabase, con fallback a conteos locales
+    remote_stats = database.load_corpus_stats()
+    corpus_stats = {
+        "total_tokens": remote_stats.get("total_tokens", 0) if remote_stats else sum(tag_counts.values()),
+        "total_sentences": remote_stats.get("total_sentences", 0) if remote_stats else 0,
+        "total_documents": remote_stats.get("total_documents", 0) if remote_stats else 0,
+        "unique_tags": len(tag_counts),
+        "unique_words": len(word_counts),
+        "processed_files": remote_stats.get("total_files", 0) if remote_stats else 0,
+    }
+
+    logger.info(
+        "Corpus reconstruido desde Supabase: %d tags, %d emisiones, %d transiciones, %d palabras",
+        len(tag_counts), len(emission_counts), len(transition_counts), len(word_counts),
+    )
+
+    return {
+        "tag_counts": tag_counts,
+        "emission_counts": emission_counts,
+        "transition_counts": transition_counts,
+        "word_counts": word_counts,
+        "stats": corpus_stats,
+    }
 
 
 def _try_read_file(filepath: str) -> Optional[list[str]]:
@@ -167,9 +229,11 @@ def parse_corpus(
         },
     }
 
-    # Guardar en caché
+    # Guardar en caché e invalidar índice
+    global _word_index
     save_cache("corpus_data", result)
     _corpus_data = result
+    _word_index = None  # Forzar reconstrucción del índice
 
     logger.info(
         f"Corpus procesado: {total_tokens:,} tokens, "
@@ -180,27 +244,37 @@ def parse_corpus(
     return result
 
 
-def search_word(word: str, limit: int = 20) -> Optional[dict]:
-    """Busca una palabra en el corpus y retorna sus etiquetas."""
+def _build_word_index() -> dict[str, dict[str, int]]:
+    """Construye índice invertido word -> {tag: count} para búsqueda O(1)."""
     data = get_corpus_data()
     if not data:
+        return {}
+    index: dict[str, dict[str, int]] = defaultdict(dict)
+    for (tag, w), count in data["emission_counts"].items():
+        index[w][tag] = count
+    return dict(index)
+
+
+def _get_word_index() -> dict[str, dict[str, int]]:
+    """Retorna el índice invertido (lazy singleton)."""
+    global _word_index
+    if _word_index is None:
+        _word_index = _build_word_index()
+    return _word_index
+
+
+def search_word(word: str, limit: int = 20) -> Optional[dict]:
+    """Busca una palabra en el corpus y retorna sus etiquetas (O(1) via índice)."""
+    index = _get_word_index()
+    if not index:
         return None
 
     word_lower = word.lower()
-    emission_counts = data["emission_counts"]
-
-    # Buscar todas las etiquetas para esta palabra
-    tags = {}
-    total = 0
-    for (tag, w), count in emission_counts.items():
-        if w == word_lower:
-            tags[tag] = count
-            total += count
-
+    tags = index.get(word_lower)
     if not tags:
         return None
 
-    # Ordenar por frecuencia
+    total = sum(tags.values())
     sorted_tags = dict(sorted(tags.items(), key=lambda x: x[1], reverse=True)[:limit])
 
     return {

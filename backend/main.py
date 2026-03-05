@@ -11,7 +11,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-from config import CORS_ORIGINS
+from config import CORS_ORIGINS, ENV
 
 # Configurar logging
 logging.basicConfig(
@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 # Rate limiter
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 
-# Crear app
+# Crear app (desactivar docs en producción)
+_is_prod = ENV == "production"
 app = FastAPI(
     title="Etiquetador Morfosintáctico HMM",
     description=(
@@ -38,6 +39,9 @@ app = FastAPI(
     version="1.0.0",
     contact={"name": "Samael Hernandez", "url": "https://github.com/shernandez"},
     license_info={"name": "MIT"},
+    docs_url=None if _is_prod else "/docs",
+    redoc_url=None if _is_prod else "/redoc",
+    openapi_url=None if _is_prod else "/openapi.json",
 )
 
 # Rate limiting
@@ -52,6 +56,17 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "Accept"],
 )
+
+# Security headers middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 # Registrar routers
 from routers import corpus, probabilities, viterbi, exports, tags, evaluation

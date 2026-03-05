@@ -15,26 +15,77 @@ _word_to_tags: Optional[dict] = None
 
 
 def get_emission_probs() -> Optional[dict]:
-    """Retorna las probabilidades de emisión (singleton)."""
+    """Retorna las probabilidades de emisión (singleton).
+
+    Cadena de carga: cache local → Supabase → None.
+    """
     global _emission_probs
-    if _emission_probs is None:
-        _emission_probs = load_cache("emission_probs")
+    if _emission_probs is not None:
+        return _emission_probs
+
+    _emission_probs = load_cache("emission_probs")
+    if _emission_probs is not None:
+        return _emission_probs
+
+    # Fallback: cargar desde Supabase
+    from models import database
+    result = database.load_emission_probs()
+    if result:
+        counts, probs = result
+        _emission_probs = probs
+        save_cache("emission_probs", probs)
+        logger.info("Emission probs restauradas desde Supabase (%d pares)", len(probs))
     return _emission_probs
 
 
 def get_transition_probs() -> Optional[dict]:
-    """Retorna las probabilidades de transición (singleton)."""
+    """Retorna las probabilidades de transición (singleton).
+
+    Cadena de carga: cache local → Supabase → None.
+    """
     global _transition_probs
-    if _transition_probs is None:
-        _transition_probs = load_cache("transition_probs")
+    if _transition_probs is not None:
+        return _transition_probs
+
+    _transition_probs = load_cache("transition_probs")
+    if _transition_probs is not None:
+        return _transition_probs
+
+    # Fallback: cargar desde Supabase
+    from models import database
+    result = database.load_transition_probs()
+    if result:
+        counts, probs = result
+        _transition_probs = probs
+        save_cache("transition_probs", probs)
+        logger.info("Transition probs restauradas desde Supabase (%d pares)", len(probs))
     return _transition_probs
 
 
 def get_word_to_tags() -> Optional[dict]:
-    """Retorna índice invertido palabra -> {etiquetas} (singleton)."""
+    """Retorna índice invertido palabra -> {etiquetas} (singleton).
+
+    Cadena de carga: cache local → reconstruir desde emission_probs → None.
+    """
     global _word_to_tags
-    if _word_to_tags is None:
-        _word_to_tags = load_cache("word_to_tags")
+    if _word_to_tags is not None:
+        return _word_to_tags
+
+    _word_to_tags = load_cache("word_to_tags")
+    if _word_to_tags is not None:
+        return _word_to_tags
+
+    # Fallback: reconstruir desde emission_probs (local o Supabase)
+    probs = get_emission_probs()
+    if probs:
+        w2t: dict[str, list] = {}
+        for tag, word in probs:
+            if word not in w2t:
+                w2t[word] = []
+            w2t[word].append(tag)
+        _word_to_tags = w2t
+        save_cache("word_to_tags", w2t)
+        logger.info("word_to_tags reconstruido desde emission_probs (%d palabras)", len(w2t))
     return _word_to_tags
 
 

@@ -71,13 +71,45 @@ class TagDescription(BaseModel):
     full_description: str = Field(..., description="Descripcion completa")
 
 
-# -- Exportacion --
+# -- Tablas de probabilidad (endpoints sin tipo) --
 
-class ExportRequest(BaseModel):
-    sentence: Optional[str] = Field(None, description="Oracion para exportar resultado Viterbi")
-    include_emission: bool = Field(True, description="Incluir tabla de emision")
-    include_transition: bool = Field(True, description="Incluir tabla de transicion")
-    top_n: int = Field(50, ge=1, le=500, description="Top N tags a incluir")
+class ProbabilityTableResponse(BaseModel):
+    entries: list[dict] = Field(..., description="Entradas de la tabla de probabilidad")
+
+
+class ViterbiHistoryResponse(BaseModel):
+    results: list[dict] = Field(default_factory=list, description="Historial de etiquetados")
+
+
+class TagDistributionResponse(BaseModel):
+    total_tokens: int = Field(..., description="Total de tokens en el corpus")
+    tags: list[dict] = Field(..., description="Distribucion de etiquetas")
+
+
+class TagDescriptionResponse(BaseModel):
+    tag: str = Field(..., description="Codigo de la etiqueta EAGLES")
+    category: str = Field("", description="Categoria gramatical principal")
+    description: str = Field("", description="Descripcion corta")
+    full_description: str = Field("", description="Descripcion completa")
+    positions: list[dict] = Field(default_factory=list, description="Descripcion de cada posicion")
+
+
+class DescribeBatchResponse(BaseModel):
+    descriptions: list[dict] = Field(..., description="Descripciones de las etiquetas solicitadas")
+
+
+class CategoriesResponse(BaseModel):
+    categories: list[dict] = Field(..., description="Categorias EAGLES principales")
+
+
+class EvaluationResult(BaseModel):
+    accuracy: float = Field(..., description="Accuracy global del etiquetador")
+    total_tokens: int = Field(0, description="Total de tokens evaluados")
+    correct_tokens: int = Field(0, description="Tokens correctamente etiquetados")
+    per_tag_metrics: list[dict] = Field(default_factory=list, description="Metricas por etiqueta")
+    confusion_matrix: Optional[dict] = Field(None, description="Matriz de confusion")
+    sentence_accuracy_distribution: Optional[dict] = Field(None, description="Distribucion de accuracy por oracion")
+    model_params: Optional[dict] = Field(None, description="Parametros del modelo utilizado")
 
 
 # -- General --

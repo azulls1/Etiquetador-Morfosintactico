@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-from models.schemas import ExportRequest, ViterbiRequest
+from models.schemas import ViterbiRequest
 from services import excel_exporter, notebook_generator, viterbi_algorithm
 from config import EXPORTS_DIR
 
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/api/exports", tags=["Exportación"])
 
 @router.get("/emission/excel")
 @limiter.limit("10/minute")
-async def export_emission_excel(request: Request, top_n: int = 30):
+def export_emission_excel(request: Request, top_n: int = 30):
     """Genera y descarga el Excel de probabilidades de emisión."""
     try:
         filepath = excel_exporter.generate_emission_excel(top_n)
@@ -35,7 +35,7 @@ async def export_emission_excel(request: Request, top_n: int = 30):
 
 @router.get("/transition/excel")
 @limiter.limit("10/minute")
-async def export_transition_excel(request: Request):
+def export_transition_excel(request: Request):
     """Genera y descarga el Excel de probabilidades de transición."""
     try:
         filepath = excel_exporter.generate_transition_excel()
@@ -50,7 +50,7 @@ async def export_transition_excel(request: Request):
 
 @router.post("/viterbi/excel")
 @limiter.limit("10/minute")
-async def export_viterbi_excel(body: ViterbiRequest, request: Request):
+def export_viterbi_excel(body: ViterbiRequest, request: Request):
     """Ejecuta Viterbi y genera el Excel con la matriz."""
     try:
         result = viterbi_algorithm.viterbi(body.sentence)
@@ -66,7 +66,7 @@ async def export_viterbi_excel(body: ViterbiRequest, request: Request):
 
 @router.get("/notebook")
 @limiter.limit("10/minute")
-async def export_notebook(request: Request):
+def export_notebook(request: Request):
     """Genera y descarga el Jupyter Notebook del proyecto."""
     try:
         filepath = notebook_generator.generate_notebook()
@@ -77,12 +77,12 @@ async def export_notebook(request: Request):
         )
     except Exception as e:
         logger.error(f"Error generando notebook: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Error interno al generar el notebook.")
 
 
 @router.get("/zip")
 @limiter.limit("5/minute")
-async def export_all_zip(request: Request):
+def export_all_zip(request: Request):
     """Genera y descarga un ZIP con todos los archivos exportados."""
     try:
         # Generar todos los archivos
@@ -127,4 +127,4 @@ async def export_all_zip(request: Request):
         raise
     except Exception as e:
         logger.error(f"Error generando ZIP: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Error interno al generar el ZIP.")

@@ -20,16 +20,15 @@ interface NavGroup {
     <aside
       role="navigation"
       aria-label="Menu lateral"
-      class="sidebar-panel fixed lg:static inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-out lg:translate-x-0 flex flex-col"
+      class="sidebar-panel fixed lg:static inset-y-0 left-0 z-40 w-60 transform transition-transform duration-300 ease-out lg:translate-x-0 flex flex-col"
       [class.-translate-x-full]="!isOpen"
       [class.translate-x-0]="isOpen">
 
       <!-- Navigation -->
-      <nav aria-label="Navegación principal" class="flex-1 px-3 py-4 overflow-y-auto mt-16 lg:mt-0">
+      <nav aria-label="Navegación principal" class="flex-1 px-3 py-5 overflow-y-auto mt-14 lg:mt-0">
         @for (group of navGroups; track group.title; let groupIdx = $index) {
-          <div class="sidebar-section-header flex items-center gap-2 px-3 mb-2" [class.mt-5]="groupIdx > 0">
-            <span class="text-[10px] font-bold tracking-[0.08em] uppercase sidebar-section-text">{{ group.title }}</span>
-            <div class="flex-1 h-px sidebar-section-line"></div>
+          <div class="px-3 mb-2" [class.mt-6]="groupIdx > 0">
+            <span class="text-[10px] font-semibold tracking-[0.08em] uppercase sidebar-section-text">{{ group.title }}</span>
           </div>
 
           <ul class="space-y-0.5 mb-1">
@@ -38,12 +37,10 @@ interface NavGroup {
                 <a [routerLink]="item.route"
                    routerLinkActive="sidebar-active"
                    [routerLinkActiveOptions]="{exact: item.route === '/'}"
-                   class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group relative">
-                  <span class="sidebar-icon-box w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200">
-                    <svg class="w-[17px] h-[17px] sidebar-icon transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-                      <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon"/>
-                    </svg>
-                  </span>
+                   class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-normal transition-all duration-200 group relative">
+                  <svg class="w-4 h-4 sidebar-icon transition-all duration-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon"/>
+                  </svg>
                   <span class="sidebar-label">{{ item.label }}</span>
                 </a>
               </li>
@@ -60,55 +57,63 @@ interface NavGroup {
   `,
   styles: [`
     .sidebar-panel {
-      background: #fafbfc;
-      border-right: 1px solid #e5e7eb;
+      background: rgba(250, 251, 252, 0.8);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-right: 1px solid rgba(0, 0, 0, 0.04);
     }
     :host-context(.dark) .sidebar-panel {
-      background: #111827;
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .sidebar-section-text { color: #9ca3af; }
-    :host-context(.dark) .sidebar-section-text { color: #6b7280; }
+    .sidebar-section-text { color: #94a3b8; }
+    :host-context(.dark) .sidebar-section-text { color: #94a3b8; }
 
-    .sidebar-section-line { background: #e5e7eb; }
-    :host-context(.dark) .sidebar-section-line { background: rgba(255, 255, 255, 0.06); }
+    .sidebar-link {
+      color: #64748b;
+      transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    .sidebar-link:hover {
+      background: rgba(59, 130, 246, 0.04);
+      color: #334155;
+      transform: translateX(2px);
+    }
+    :host-context(.dark) .sidebar-link { color: #cbd5e1; }
+    :host-context(.dark) .sidebar-link:hover {
+      background: rgba(59, 130, 246, 0.06);
+      color: #e2e8f0;
+      transform: translateX(2px);
+    }
 
-    .sidebar-link { color: #4b5563; }
-    .sidebar-link:hover { background: rgba(47, 84, 150, 0.04); color: #1f2937; }
-    :host-context(.dark) .sidebar-link { color: #9ca3af; }
-    :host-context(.dark) .sidebar-link:hover { background: rgba(255, 255, 255, 0.04); color: #e5e7eb; }
+    .sidebar-icon { color: #94a3b8; }
+    :host-context(.dark) .sidebar-icon { color: #94a3b8; }
 
-    .sidebar-icon-box { background: rgba(0, 0, 0, 0.03); }
-    :host-context(.dark) .sidebar-icon-box { background: rgba(255, 255, 255, 0.06); }
-
-    .sidebar-icon { color: #6b7280; }
-    :host-context(.dark) .sidebar-icon { color: #9ca3af; }
-
-    /* Active state */
+    /* Active state — clean blue highlight */
     .sidebar-link.sidebar-active {
-      background: linear-gradient(135deg, rgba(47, 84, 150, 0.08), rgba(47, 84, 150, 0.04));
-      color: #2F5496;
+      background: rgba(59, 130, 246, 0.08);
+      color: #2563EB;
+      font-weight: 500;
     }
     :host-context(.dark) .sidebar-link.sidebar-active {
-      background: linear-gradient(135deg, rgba(47, 84, 150, 0.2), rgba(47, 84, 150, 0.08));
-      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.12);
+      color: #60A5FA;
     }
-    .sidebar-link.sidebar-active .sidebar-icon-box {
-      background: linear-gradient(135deg, #2F5496, #1e3a6e) !important;
-      box-shadow: 0 2px 8px rgba(47, 84, 150, 0.35);
+    .sidebar-link.sidebar-active .sidebar-icon {
+      color: #3B82F6 !important;
     }
-    .sidebar-link.sidebar-active .sidebar-icon { color: #ffffff !important; }
-    .sidebar-link.sidebar-active .sidebar-label { font-weight: 600; }
+    :host-context(.dark) .sidebar-link.sidebar-active .sidebar-icon {
+      color: #60A5FA !important;
+    }
 
     /* Hover icon */
-    .sidebar-link:hover:not(.sidebar-active) .sidebar-icon-box { background: rgba(47, 84, 150, 0.08); }
-    :host-context(.dark) .sidebar-link:hover:not(.sidebar-active) .sidebar-icon-box { background: rgba(255, 255, 255, 0.1); }
-    .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #2F5496; }
-    :host-context(.dark) .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #93c5fd; }
+    .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #3B82F6; }
+    :host-context(.dark) .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #60A5FA; }
 
     .sidebar-overlay {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
     }

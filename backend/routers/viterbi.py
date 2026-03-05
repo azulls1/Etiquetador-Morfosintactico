@@ -1,11 +1,11 @@
 """Endpoint de etiquetado con el algoritmo de Viterbi."""
 
 import logging
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Query, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-from models.schemas import ViterbiRequest, ViterbiResult
+from models.schemas import ViterbiRequest, ViterbiResult, ViterbiHistoryResponse
 from services import viterbi_algorithm
 from models import database
 
@@ -16,7 +16,7 @@ router = APIRouter(prefix="/api/viterbi", tags=["Viterbi"])
 
 @router.post("/tag", response_model=ViterbiResult)
 @limiter.limit("30/minute")
-async def tag_sentence(body: ViterbiRequest, request: Request):
+def tag_sentence(body: ViterbiRequest, request: Request):
     """Etiqueta una oración usando el algoritmo de Viterbi.
 
     Body:
@@ -43,14 +43,12 @@ async def tag_sentence(body: ViterbiRequest, request: Request):
 
         return ViterbiResult(**result)
 
-    except RuntimeError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except (RuntimeError, ValueError):
+        raise HTTPException(status_code=400, detail="Error al ejecutar el algoritmo de Viterbi. Verifique que el modelo esté entrenado.")
 
 
-@router.get("/history")
-async def get_history(limit: int = 50):
+@router.get("/history", response_model=ViterbiHistoryResponse)
+async def get_history(limit: int = Query(50, ge=1, le=200, description="Máximo de resultados (1-200)")):
     """Retorna el historial de oraciones etiquetadas."""
     results = database.load_tagging_results(limit)
     return {"results": results}

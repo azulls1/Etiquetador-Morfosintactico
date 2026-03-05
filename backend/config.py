@@ -2,6 +2,10 @@
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Cargar variables de .env
+load_dotenv(Path(__file__).parent / ".env")
 
 # Entorno
 ENV = os.getenv("ENV", "development")
@@ -36,3 +40,9 @@ _DEVELOPMENT_ORIGINS = [
 ]
 
 CORS_ORIGINS = _PRODUCTION_ORIGINS + (_DEVELOPMENT_ORIGINS if ENV != "production" else [])
+
+# Upload
+MAX_UPLOAD_SIZE = int(os.getenv("MAX_UPLOAD_SIZE", str(500 * 1024 * 1024)))  # 500 MB
+
+# Prefijo de tablas Supabase
+TABLE_PREFIX = "etqmorf_"
