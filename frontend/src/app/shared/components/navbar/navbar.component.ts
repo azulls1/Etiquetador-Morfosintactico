@@ -30,7 +30,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
       <!-- User info -->
       <div class="hidden md:flex items-center gap-2 ml-2 pl-2 navbar-user-divider">
         <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-semibold shrink-0 navbar-logo">
-          E3
+          E4
         </div>
         <div class="hidden lg:block">
           <p class="text-xs font-medium navbar-user-name leading-tight">Equipo PLN</p>

@@ -42,7 +42,7 @@ import { environment } from '../../../environments/environment';
           Equipo 1073F
         </p>
         <p class="text-base text-white max-w-2xl mx-auto mt-1">
-          Adonai Samael Hernandez Mata &middot; Diego Alfonso Najera Ortiz &middot; Mauricio Alberto Alvares Aspeitia
+          Adonai Samael Hernandez Mata &middot; Diego Alfonso Najera Ortiz &middot; Mauricio Alberto Alvares Aspeitia &middot; Cesar Ivan Martinez Perez
         </p>
       </div>
     </section>

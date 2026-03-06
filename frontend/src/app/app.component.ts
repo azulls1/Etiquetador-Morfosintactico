@@ -35,7 +35,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
           Etiquetador Morfosintactico HMM &mdash; Procesamiento del Lenguaje Natural &mdash; UNIR 2026
         </p>
         <p class="text-[10px] app-footer-sub mt-0.5">
-          Desarrollado por Adonai Samael Hernandez Mata, Diego Alfonso Najera Ortiz, Mauricio Alberto Alvares Aspeitia &mdash; Maestria en Inteligencia Artificial
+          Desarrollado por Adonai Samael Hernandez Mata, Diego Alfonso Najera Ortiz, Mauricio Alberto Alvares Aspeitia, Cesar Ivan Martinez Perez &mdash; Maestria en Inteligencia Artificial
         </p>
       </footer>
     </div>
