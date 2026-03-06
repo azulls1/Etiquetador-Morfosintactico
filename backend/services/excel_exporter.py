@@ -210,11 +210,12 @@ def generate_transition_excel() -> str:
     return str(filepath)
 
 
-def generate_viterbi_excel(viterbi_result: dict) -> str:
+def generate_viterbi_excel(viterbi_result: dict, filename: str = "viterbi_resultado.xlsx") -> str:
     """Genera Excel con la matriz de Viterbi de un etiquetado.
 
     Args:
         viterbi_result: Resultado del algoritmo de Viterbi.
+        filename: Nombre del archivo de salida.
 
     Returns:
         Ruta del archivo generado.
@@ -302,7 +303,145 @@ def generate_viterbi_excel(viterbi_result: dict) -> str:
 
     _auto_width(ws)
 
-    filepath = EXPORTS_DIR / "viterbi_resultado.xlsx"
+    filepath = EXPORTS_DIR / filename
     wb.save(str(filepath))
     logger.info(f"Excel de Viterbi generado: {filepath}")
+    return str(filepath)
+
+
+def generate_comparison_excel(result_1: dict, result_2: dict) -> str:
+    """Genera Excel con la comparación de dos etiquetados de Viterbi.
+
+    Args:
+        result_1: Resultado de viterbi() para la oración 1.
+        result_2: Resultado de viterbi() para la oración 2.
+
+    Returns:
+        Ruta del archivo generado.
+    """
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Comparación"
+
+    # Título
+    ws.merge_cells("A1:G1")
+    ws["A1"].value = "Comparación de Etiquetados — Oraciones Obligatorias"
+    ws["A1"].font = Font(bold=True, size=14, color="2F5496")
+    ws["A1"].alignment = CENTER
+
+    # ── Oración 1 ──
+    ws.merge_cells("A3:G3")
+    ws["A3"].value = f"Oración 1: \"{result_1['sentence']}\""
+    ws["A3"].font = Font(bold=True, size=11)
+
+    headers = ["Posición", "Token", "Etiqueta", "Descripción"]
+    for col, h in enumerate(headers, 1):
+        ws.cell(row=4, column=col, value=h)
+    _style_header(ws, 4, len(headers))
+
+    row = 5
+    for j, (tok, tag, desc) in enumerate(zip(
+        result_1["tokens"], result_1["tags"], result_1["descriptions"]
+    )):
+        ws.cell(row=row, column=1, value=j + 1)
+        ws.cell(row=row, column=2, value=tok)
+        ws.cell(row=row, column=3, value=tag)
+        ws.cell(row=row, column=4, value=desc)
+        for c in range(1, 5):
+            ws.cell(row=row, column=c).border = BORDER
+            ws.cell(row=row, column=c).alignment = CENTER if c <= 3 else LEFT
+        row += 1
+
+    # ── Oración 2 ──
+    row += 1
+    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+    ws.cell(row=row, column=1).value = f"Oración 2: \"{result_2['sentence']}\""
+    ws.cell(row=row, column=1).font = Font(bold=True, size=11)
+    row += 1
+
+    for col, h in enumerate(headers, 1):
+        ws.cell(row=row, column=col, value=h)
+    _style_header(ws, row, len(headers))
+    row += 1
+
+    for j, (tok, tag, desc) in enumerate(zip(
+        result_2["tokens"], result_2["tags"], result_2["descriptions"]
+    )):
+        ws.cell(row=row, column=1, value=j + 1)
+        ws.cell(row=row, column=2, value=tok)
+        ws.cell(row=row, column=3, value=tag)
+        ws.cell(row=row, column=4, value=desc)
+        for c in range(1, 5):
+            ws.cell(row=row, column=c).border = BORDER
+            ws.cell(row=row, column=c).alignment = CENTER if c <= 3 else LEFT
+        row += 1
+
+    # ── Tabla comparativa ──
+    row += 1
+    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+    ws.cell(row=row, column=1).value = "Comparación por Palabra Compartida"
+    ws.cell(row=row, column=1).font = Font(bold=True, size=12, color="2F5496")
+    row += 1
+
+    comp_headers = ["Palabra", "Etiqueta Or.1", "Descripción Or.1",
+                    "Etiqueta Or.2", "Descripción Or.2", "¿Coinciden?"]
+    for col, h in enumerate(comp_headers, 1):
+        ws.cell(row=row, column=col, value=h)
+    _style_header(ws, row, len(comp_headers))
+    row += 1
+
+    # Buscar palabras comunes
+    map_1 = {tok.lower(): (tag, desc) for tok, tag, desc in zip(
+        result_1["tokens"], result_1["tags"], result_1["descriptions"]
+    )}
+    map_2 = {tok.lower(): (tag, desc) for tok, tag, desc in zip(
+        result_2["tokens"], result_2["tags"], result_2["descriptions"]
+    )}
+    palabras_comunes = [w for w in map_1 if w in map_2]
+
+    match_fill = PatternFill(start_color="C8E6C9", end_color="C8E6C9", fill_type="solid")
+    diff_fill = PatternFill(start_color="FFCDD2", end_color="FFCDD2", fill_type="solid")
+
+    for palabra in palabras_comunes:
+        tag1, desc1 = map_1[palabra]
+        tag2, desc2 = map_2[palabra]
+        coincide = tag1 == tag2
+        ws.cell(row=row, column=1, value=palabra)
+        ws.cell(row=row, column=2, value=tag1)
+        ws.cell(row=row, column=3, value=desc1)
+        ws.cell(row=row, column=4, value=tag2)
+        ws.cell(row=row, column=5, value=desc2)
+        ws.cell(row=row, column=6, value="Sí" if coincide else "No")
+
+        fill = match_fill if coincide else diff_fill
+        for c in range(1, 7):
+            ws.cell(row=row, column=c).border = BORDER
+            ws.cell(row=row, column=c).alignment = CENTER if c in (2, 4, 6) else LEFT
+            ws.cell(row=row, column=c).fill = fill
+        row += 1
+
+    # ── Resumen de probabilidades ──
+    row += 1
+    ws.cell(row=row, column=1, value="Log-probabilidad Oración 1:")
+    ws.cell(row=row, column=1).font = Font(bold=True)
+    import math
+    lp1 = math.log(result_1["best_path_prob"]) if result_1["best_path_prob"] > 0 else 0
+    lp2 = math.log(result_2["best_path_prob"]) if result_2["best_path_prob"] > 0 else 0
+    ws.cell(row=row, column=2, value=lp1)
+    ws.cell(row=row, column=2).number_format = "0.0000"
+    row += 1
+    ws.cell(row=row, column=1, value="Log-probabilidad Oración 2:")
+    ws.cell(row=row, column=1).font = Font(bold=True)
+    ws.cell(row=row, column=2, value=lp2)
+    ws.cell(row=row, column=2).number_format = "0.0000"
+    row += 1
+    mas_probable = "Oración 2" if lp2 > lp1 else "Oración 1"
+    ws.cell(row=row, column=1, value=f"Más probable: {mas_probable}")
+    ws.cell(row=row, column=1).font = Font(bold=True, color="2F5496")
+
+    _auto_width(ws)
+
+    filepath = EXPORTS_DIR / "comparacion_etiquetados.xlsx"
+    wb.save(str(filepath))
+    logger.info(f"Excel de comparación generado: {filepath}")
     return str(filepath)

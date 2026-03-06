@@ -91,23 +91,59 @@ def export_notebook(request: Request):
 @router.get("/zip")
 @limiter.limit("5/minute")
 def export_all_zip(request: Request):
-    """Genera y descarga un ZIP con todos los archivos exportados."""
+    """Genera y descarga un ZIP con todos los archivos exportados.
+
+    Archivos generados (6 total, cubren los 9 ítems del checklist):
+    1. tabla_emision.xlsx            — Checklist ítem 2
+    2. tabla_transicion.xlsx         — Checklist ítem 3
+    3. viterbi_oracion_1.xlsx        — Checklist ítems 4 y 5
+    4. viterbi_oracion_2.xlsx        — Checklist ítems 5 y 6
+    5. comparacion_etiquetados.xlsx  — Checklist ítem 7
+    6. etiquetador_hmm_viterbi.ipynb — Checklist ítems 1, 8 y 9
+    """
     try:
-        # Generar todos los archivos
         files_to_zip = []
 
+        # ── 1. Excel de emisión ──
         try:
             filepath = excel_exporter.generate_emission_excel()
             files_to_zip.append(filepath)
         except Exception as e:
             logger.warning(f"No se pudo generar Excel de emisión: {e}")
 
+        # ── 2. Excel de transición ──
         try:
             filepath = excel_exporter.generate_transition_excel()
             files_to_zip.append(filepath)
         except Exception as e:
             logger.warning(f"No se pudo generar Excel de transición: {e}")
 
+        # ── 3 y 4. Viterbi de las oraciones obligatorias ──
+        oraciones_obligatorias = [
+            ("Habla con el enfermo grave de trasplantes .", "viterbi_oracion_1.xlsx"),
+            ("El enfermo grave habla de trasplantes .", "viterbi_oracion_2.xlsx"),
+        ]
+        viterbi_results = []
+        for oracion, filename in oraciones_obligatorias:
+            try:
+                result = viterbi_algorithm.viterbi(oracion)
+                viterbi_results.append(result)
+                filepath = excel_exporter.generate_viterbi_excel(result, filename=filename)
+                files_to_zip.append(filepath)
+            except Exception as e:
+                logger.warning(f"No se pudo generar Viterbi Excel para '{oracion}': {e}")
+
+        # ── 5. Comparación de ambos etiquetados ──
+        if len(viterbi_results) == 2:
+            try:
+                filepath = excel_exporter.generate_comparison_excel(
+                    viterbi_results[0], viterbi_results[1]
+                )
+                files_to_zip.append(filepath)
+            except Exception as e:
+                logger.warning(f"No se pudo generar Excel de comparación: {e}")
+
+        # ── 6. Notebook completo ──
         try:
             filepath = notebook_generator.generate_notebook()
             files_to_zip.append(filepath)

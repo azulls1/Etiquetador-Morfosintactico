@@ -159,6 +159,7 @@ def parse_corpus(
                 # Reiniciar estado de oración al cambiar de documento
                 if in_sentence and prev_tag is not None:
                     transition_counts[(prev_tag, "<END>")] += 1
+                    total_sentences += 1
                 in_sentence = False
                 prev_tag = None
                 continue

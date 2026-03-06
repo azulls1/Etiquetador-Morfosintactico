@@ -18,7 +18,9 @@
       "performance",
       "docs",
       "devops_deploy",
-      "compliance_review"
+      "compliance_review",
+      "team_setup",
+      "supabase_production_config"
     ],
     "pending_steps": [],
     "artifacts": {
@@ -27,6 +29,8 @@
       "viterbi_algorithm": "backend/services/viterbi_algorithm.py",
       "corpus_parser": "backend/services/corpus_parser.py",
       "eagles_tags": "backend/services/eagles_tags.py",
+      "evaluation_service": "backend/services/evaluation.py",
+      "redis_cache": "backend/services/redis_cache.py",
       "frontend_app": "frontend/src/app/app.component.ts",
       "dashboard": "frontend/src/app/features/dashboard/dashboard.component.ts",
       "viterbi_ui": "frontend/src/app/features/viterbi/viterbi.component.ts",
@@ -34,13 +38,16 @@
       "analysis_ui": "frontend/src/app/features/analysis/analysis.component.ts",
       "probabilities_ui": "frontend/src/app/features/probabilities/probabilities.component.ts",
       "exports_ui": "frontend/src/app/features/exports/exports.component.ts",
+      "eagles_reference_ui": "frontend/src/app/features/analysis/eagles-reference.component.ts",
       "unit_tests": "backend/tests/",
       "docker_compose": "docker-compose.yml",
+      "docker_stack": "docker-stack.yml",
       "readme": "README.md",
       "nginx_conf": "frontend/nginx.conf",
       "postcssrc": "frontend/.postcssrc.json",
       "dockerfile_backend": "backend/Dockerfile",
-      "dockerfile_frontend": "frontend/Dockerfile"
+      "dockerfile_frontend": "frontend/Dockerfile",
+      "toast_component": "frontend/src/app/shared/components/toast/"
     },
     "decisions": [
       {
@@ -57,26 +64,26 @@
       },
       {
         "id": "ADR-003",
+        "title": "Tema Forest light-only con Tailwind v4",
+        "description": "Paleta Forest (#04202C, #304040, #5B7065, #C9D1C8) sin dark mode. Fonts: Sora (display), DM Sans (body), JetBrains Mono (mono). Tailwind v4 con @theme overrides en styles.css",
+        "date": "2026-03-05"
+      },
+      {
+        "id": "ADR-004",
         "title": "Suavizado de Laplace para HMM",
         "description": "Implementar add-alpha smoothing para evitar probabilidades cero en emision y transicion",
         "date": "2026-03-04"
       },
       {
-        "id": "ADR-004",
+        "id": "ADR-005",
         "title": "Indice word_to_tags para Viterbi O(1)",
         "description": "Crear indice invertido word->tags durante entrenamiento para busqueda O(1) en Viterbi en vez de O(n)",
         "date": "2026-03-04"
       },
       {
-        "id": "ADR-005",
+        "id": "ADR-006",
         "title": "Corpus dir del servidor, no del cliente",
         "description": "Ignorar corpus_dir enviado por cliente por seguridad, usar siempre CORPUS_DIR del servidor",
-        "date": "2026-03-04"
-      },
-      {
-        "id": "ADR-006",
-        "title": "Probabilities page scrollable layout sin tabs",
-        "description": "Rediseno de la pagina de probabilidades: layout scrollable con stats dashboard, heatmap con crosshair hover, tablas con paginacion de 10 por pagina, sin tabs",
         "date": "2026-03-04"
       },
       {
@@ -88,14 +95,20 @@
       {
         "id": "ADR-008",
         "title": "PostCSS config requerido en produccion para Tailwind v4",
-        "description": "Tailwind CSS v4 requiere .postcssrc.json en el contexto de build de Docker para generar utility classes correctamente. Sin este archivo, el CSS se reduce de 91KB a 25KB y las clases utilitarias no se generan",
+        "description": "Tailwind CSS v4 requiere .postcssrc.json en el contexto de build de Docker para generar utility classes correctamente",
         "date": "2026-03-04"
       },
       {
         "id": "ADR-009",
         "title": "nginx resolver para Docker Swarm DNS",
-        "description": "nginx en Docker Swarm requiere resolver 127.0.0.11 para resolver nombres de servicios internos. Tambien requiere listen en IPv4 solo (0.0.0.0:80) y healthcheck con curl en lugar de wget",
+        "description": "nginx en Docker Swarm requiere resolver 127.0.0.11 para resolver nombres de servicios internos",
         "date": "2026-03-04"
+      },
+      {
+        "id": "ADR-010",
+        "title": "Supabase CRUD para datos de referencia",
+        "description": "Endpoints CRUD para analysis questions, eagles examples/positions y quick sentences almacenados en Supabase. SUPABASE_KEY requerida en produccion via variable de entorno en docker-stack.yml",
+        "date": "2026-03-05"
       }
     ],
     "started_at": "2026-01-15T00:00:00.000000"
@@ -115,7 +128,7 @@
     },
     {
       "id": "task_20260215_uiux",
-      "task": "Rediseno completo UI/UX con glassmorphism y dark mode",
+      "task": "Rediseno completo UI/UX con glassmorphism y tema Forest (light-only)",
       "completed_at": "2026-03-03T00:00:00.000000",
       "agents": ["nxt-design", "nxt-accessibility"]
     },
@@ -133,15 +146,57 @@
     },
     {
       "id": "task_20260304_probabilities_redesign",
-      "task": "Rediseno completo de la pagina de probabilidades: layout scrollable, stats dashboard (5 cards), 2-column grid (emission+transitions), heatmap hero, paginacion 10/page, dark mode, training feedback con banner animado y progress bar",
+      "task": "Rediseno completo de la pagina de probabilidades: layout scrollable, stats dashboard, heatmap, paginacion",
       "completed_at": "2026-03-04T00:00:00.000000",
       "agents": ["nxt-design", "nxt-dev"]
     },
     {
       "id": "task_20260304_production_deploy",
-      "task": "Despliegue completo en produccion VPS (144.126.157.81) con Docker Swarm + Traefik. Resueltos: dependencias backend (requests, python-multipart), nginx DNS resolver + IPv4 binding + healthcheck, .postcssrc.json para Tailwind v4 CSS build, dashboard health endpoint (GET /health), CSP Google Fonts. Auditoria seguridad zero secretos expuestos. App live en https://etiqmorfsintac.iagentek.com.mx",
+      "task": "Despliegue completo en produccion VPS con Docker Swarm + Traefik",
       "completed_at": "2026-03-04T00:00:00.000000",
       "agents": ["nxt-devops", "nxt-cybersec", "nxt-dev"]
+    },
+    {
+      "id": "task_20260305_responsive",
+      "task": "Hacer todos los componentes responsive con breakpoints de Tailwind",
+      "completed_at": "2026-03-05T00:00:00.000000",
+      "agents": ["nxt-design", "nxt-dev"]
+    },
+    {
+      "id": "task_20260305_team_members",
+      "task": "Agregar Equipo 1073F con 4 integrantes en dashboard hero, navbar y footer",
+      "completed_at": "2026-03-05T00:00:00.000000",
+      "agents": ["nxt-design"],
+      "details": {
+        "team_name": "Equipo 1073F",
+        "members": [
+          "Adonai Samael Hernandez Mata",
+          "Diego Alfonso Najera Ortiz",
+          "Mauricio Alberto Alvares Aspeitia",
+          "Cesar Ivan Martinez Perez"
+        ],
+        "locations_updated": [
+          "dashboard hero section",
+          "navbar user info (E4 avatar, Equipo PLN)",
+          "app footer"
+        ]
+      }
+    },
+    {
+      "id": "task_20260306_supabase_production",
+      "task": "Configurar SUPABASE_KEY en VPS y redesplegar backend para conectar base de datos en produccion",
+      "completed_at": "2026-03-06T00:00:00.000000",
+      "agents": ["nxt-devops", "nxt-database"],
+      "details": {
+        "problem": "SUPABASE_KEY no configurada en VPS, endpoints CRUD retornaban datos vacios",
+        "solution": "Crear .env en VPS, exportar SUPABASE_KEY al desplegar con docker stack deploy, forzar recreacion del backend",
+        "verified_endpoints": [
+          "/api/analysis/questions (5 preguntas)",
+          "/api/eagles/examples (ejemplos EAGLES)",
+          "/api/eagles/positions (7 posiciones)",
+          "/api/sentences (2 oraciones rapidas)"
+        ]
+      }
     }
   ],
   "pending_tasks": [],
@@ -192,24 +247,10 @@
     },
     {
       "type": "ui_redesign",
-      "task": "Probabilities page rediseno completo - scrollable layout, stats dashboard, heatmap crosshair, emission/transition tables con paginacion",
+      "task": "Probabilities page rediseno completo",
       "agent": "nxt-design",
       "files": ["frontend/src/app/features/probabilities/probabilities.component.ts"],
       "timestamp": "2026-03-04T00:00:00.000000"
-    },
-    {
-      "type": "ux_improvement",
-      "task": "Training feedback: banner animado azul con shimmer y progress bar, success/error toast notifications",
-      "agent": "nxt-design",
-      "files": ["frontend/src/app/features/probabilities/probabilities.component.ts"],
-      "timestamp": "2026-03-04T00:00:00.000000"
-    },
-    {
-      "type": "changelog",
-      "task": "CHANGELOG.md actualizado con deployment a produccion v0.6.0: Docker Swarm, Traefik, Supabase, glassmorphism UI, security audit, deployment fixes",
-      "agent": "nxt-changelog",
-      "files": ["CHANGELOG.md", "docs/releases/v0.6.0.md"],
-      "timestamp": "2026-03-04T23:59:00.000000"
     },
     {
       "type": "deployment",
@@ -217,55 +258,46 @@
       "agent": "nxt-devops",
       "details": {
         "vps_ip": "144.126.157.81",
+        "ssh_port": 22000,
         "domain": "etiqmorfsintac.iagentek.com.mx",
         "protocol": "HTTPS (Let's Encrypt TLS)",
         "orchestrator": "Docker Swarm",
         "reverse_proxy": "Traefik v2",
-        "services": ["backend (FastAPI)", "frontend (Angular + nginx)"]
+        "services": ["backend (FastAPI)", "frontend (Angular + nginx)"],
+        "project_path_vps": "/opt/stacks/etiqmorfsintac/"
       },
       "timestamp": "2026-03-04T00:00:00.000000"
     },
     {
-      "type": "deployment_fix",
-      "task": "Backend: agregar requests y python-multipart a requirements.txt",
-      "agent": "nxt-dev",
-      "file": "backend/requirements.txt",
-      "timestamp": "2026-03-04T00:00:00.000000"
+      "type": "ui_update",
+      "task": "Tema Forest light-only: paleta #04202C/#304040/#5B7065/#C9D1C8, fonts Sora/DM Sans/JetBrains Mono, eliminado dark mode",
+      "agent": "nxt-design",
+      "files": ["frontend/src/styles.css", "frontend/src/index.html"],
+      "timestamp": "2026-03-05T00:00:00.000000"
+    },
+    {
+      "type": "responsive",
+      "task": "Todos los componentes responsive con breakpoints Tailwind (sm/md/lg/xl)",
+      "agent": "nxt-design",
+      "timestamp": "2026-03-05T00:00:00.000000"
+    },
+    {
+      "type": "team_setup",
+      "task": "Agregar Equipo 1073F (4 integrantes) en dashboard, navbar y footer",
+      "agent": "nxt-design",
+      "files": [
+        "frontend/src/app/features/dashboard/dashboard.component.ts",
+        "frontend/src/app/shared/components/navbar/navbar.component.ts",
+        "frontend/src/app/app.component.ts"
+      ],
+      "timestamp": "2026-03-05T00:00:00.000000"
     },
     {
       "type": "deployment_fix",
-      "task": "Frontend nginx: resolver 127.0.0.11 para Docker DNS, listen 0.0.0.0:80 IPv4, healthcheck con curl",
+      "task": "Configurar SUPABASE_KEY en produccion VPS para habilitar endpoints CRUD",
       "agent": "nxt-devops",
-      "file": "frontend/nginx.conf",
-      "timestamp": "2026-03-04T00:00:00.000000"
-    },
-    {
-      "type": "deployment_fix",
-      "task": "Frontend CSS: agregar .postcssrc.json al build Docker para que Tailwind v4 genere utility classes (91KB vs 25KB sin el archivo)",
-      "agent": "nxt-dev",
-      "file": "frontend/.postcssrc.json",
-      "timestamp": "2026-03-04T00:00:00.000000"
-    },
-    {
-      "type": "deployment_fix",
-      "task": "Dashboard health check: cambiar GET / a GET /health para verificar backend",
-      "agent": "nxt-dev",
-      "file": "frontend/src/app/features/dashboard/dashboard.component.ts",
-      "timestamp": "2026-03-04T00:00:00.000000"
-    },
-    {
-      "type": "deployment_fix",
-      "task": "CSP: permitir Google Fonts (fonts.googleapis.com, fonts.gstatic.com) en Content-Security-Policy",
-      "agent": "nxt-cybersec",
-      "file": "frontend/nginx.conf",
-      "timestamp": "2026-03-04T00:00:00.000000"
-    },
-    {
-      "type": "security_audit",
-      "task": "Auditoria de seguridad post-deploy: zero secretos expuestos confirmado",
-      "agent": "nxt-cybersec",
-      "result": "PASS - no secrets in codebase",
-      "timestamp": "2026-03-04T00:00:00.000000"
+      "details": "Crear .env en VPS, exportar SUPABASE_KEY al hacer docker stack deploy, forzar recreacion del backend",
+      "timestamp": "2026-03-06T00:00:00.000000"
     }
   ],
   "session_history": [
@@ -280,24 +312,33 @@
     {
       "session_id": "session_20260304_002",
       "started_at": "2026-03-04T00:00:00.000000",
-      "summary": "Rediseno completo pagina de probabilidades: removed tabs, added scrollable layout with stats dashboard (5 cards), 2-column grid (emission left, transitions right), full-width heatmap hero with crosshair hover, emission/transition tables with pagination (10/page), dark mode support. Added training feedback: animated blue banner with shimmer effect and progress bar during training, success/error toast. Verified all backend endpoints working (emission table, transition table, train). Data stats: 3.2M vocabulary, 3.4M emission pairs, 34K transition pairs, 414 tags. Data persists in pickle cache (backend/cache/*.pkl) and Supabase remote DB. Build verified successful.",
-      "tasks_completed": 1,
-      "files_modified": 1,
-      "files_created": 0,
-      "primary_file": "frontend/src/app/features/probabilities/probabilities.component.ts"
+      "summary": "Rediseno completo pagina de probabilidades + despliegue produccion Docker Swarm + Traefik",
+      "tasks_completed": 2,
+      "files_modified": 9,
+      "files_created": 1
     },
     {
-      "session_id": "session_20260304_003",
-      "started_at": "2026-03-04T00:00:00.000000",
-      "summary": "Despliegue completo en produccion VPS (144.126.157.81) con Docker Swarm + Traefik. Problemas resueltos: (1) backend faltaban dependencias requests y python-multipart en requirements.txt, (2) frontend nginx resolver DNS 127.0.0.11, binding IPv4 0.0.0.0:80, healthcheck con curl, (3) frontend CSS faltaba .postcssrc.json causando que Tailwind v4 no generara utility classes (25KB vs 91KB), (4) dashboard health check llamaba GET / en vez de GET /health, (5) CSP bloqueaba Google Fonts. Se hizo commit, push a GitHub, git clone limpio en VPS, rebuild y redeploy. App funcionando en https://etiqmorfsintac.iagentek.com.mx. Auditoria de seguridad confirmo zero secretos expuestos.",
+      "session_id": "session_20260305_001",
+      "started_at": "2026-03-05T00:00:00.000000",
+      "summary": "Componentes responsive con breakpoints Tailwind. Tema Forest light-only. Modulo evaluacion, CRUD endpoints (analysis, sentences, eagles). UI improvements.",
       "tasks_completed": 1,
-      "files_modified": 8,
-      "files_created": 1,
+      "files_modified": 25,
+      "files_created": 6
+    },
+    {
+      "session_id": "session_20260305_002",
+      "started_at": "2026-03-05T00:00:00.000000",
+      "summary": "Agregar Equipo 1073F (4 integrantes: Adonai Samael Hernandez Mata, Diego Alfonso Najera Ortiz, Mauricio Alberto Alvares Aspeitia, Cesar Ivan Martinez Perez) en dashboard hero, navbar (E4, Equipo PLN) y footer. Redeploy a produccion. Configurar SUPABASE_KEY en VPS para habilitar CRUD endpoints.",
+      "tasks_completed": 3,
+      "files_modified": 3,
+      "files_created": 0,
+      "commits": ["2fb7033", "01cb447"],
       "deployment": {
         "vps_ip": "144.126.157.81",
         "domain": "etiqmorfsintac.iagentek.com.mx",
         "status": "live",
-        "stack": "Docker Swarm + Traefik + nginx + FastAPI"
+        "supabase_configured": true,
+        "all_endpoints_verified": true
       }
     }
   ],
@@ -347,15 +388,27 @@
     "always_trigger_includes_all": true
   },
   "project_data": {
+    "team": {
+      "name": "Equipo 1073F",
+      "label": "Equipo PLN",
+      "members": [
+        "Adonai Samael Hernandez Mata",
+        "Diego Alfonso Najera Ortiz",
+        "Mauricio Alberto Alvares Aspeitia",
+        "Cesar Ivan Martinez Perez"
+      ]
+    },
     "corpus_stats": {
       "vocabulary_size": "3.2M",
       "emission_pairs": "3.4M",
       "transition_pairs": "34K",
-      "tag_count": 414
+      "tag_count": 414,
+      "total_tokens": "112M",
+      "total_sentences": "5.1M"
     },
     "data_persistence": {
       "local_cache": "backend/cache/*.pkl",
-      "remote_db": "Supabase"
+      "remote_db": "Supabase (supabase-maestria.iagentek.com.mx)"
     },
     "tech_stack": {
       "frontend": "Angular 19 standalone + Tailwind CSS v4",
@@ -368,13 +421,30 @@
       "production": {
         "domain": "etiqmorfsintac.iagentek.com.mx",
         "vps_ip": "144.126.157.81",
+        "ssh_port": 22000,
+        "project_path": "/opt/stacks/etiqmorfsintac/",
         "orchestrator": "Docker Swarm",
         "reverse_proxy": "Traefik v2 (auto TLS via Let's Encrypt)",
-        "web_server": "nginx (frontend static files)",
-        "protocol": "HTTPS"
+        "web_server": "nginx (frontend static files + API reverse proxy)",
+        "protocol": "HTTPS",
+        "deploy_file": "docker-stack.yml",
+        "supabase_configured": true
       },
-      "primary_color": "#2F5496",
-      "accent_color": "#f97316"
+      "design": {
+        "theme": "Forest (light-only)",
+        "dark_mode": false,
+        "colors": {
+          "forest": "#04202C",
+          "evergreen": "#304040",
+          "pine": "#5B7065",
+          "fog": "#C9D1C8"
+        },
+        "fonts": {
+          "display": "Sora",
+          "body": "DM Sans",
+          "mono": "JetBrains Mono"
+        }
+      }
     }
   },
   "deployment": {
@@ -382,20 +452,25 @@
     "environment": "production",
     "url": "https://etiqmorfsintac.iagentek.com.mx",
     "vps_ip": "144.126.157.81",
+    "ssh_port": 22000,
+    "project_path": "/opt/stacks/etiqmorfsintac/",
     "infrastructure": {
       "orchestrator": "Docker Swarm",
       "reverse_proxy": "Traefik v2",
       "tls": "Let's Encrypt (automatic)",
       "services": {
         "backend": {
-          "image": "custom FastAPI",
+          "image": "etiqmorfsintac-backend:latest",
           "port": 8000,
-          "healthcheck": "GET /health"
+          "healthcheck": "GET /health",
+          "env_vars": ["ENV=production", "CORPUS_DIR=/app/corpus", "SUPABASE_URL", "SUPABASE_KEY"],
+          "supabase_connected": true
         },
         "frontend": {
-          "image": "custom Angular + nginx",
+          "image": "etiqmorfsintac-frontend:latest",
           "port": 80,
-          "healthcheck": "curl -f http://localhost:80/"
+          "healthcheck": "wget -q --spider http://127.0.0.1:80/",
+          "nginx_proxy": "/api/ and /health -> backend:8000"
         }
       }
     },
@@ -403,18 +478,20 @@
       "Backend missing dependencies: requests, python-multipart",
       "nginx DNS resolver for Docker Swarm (127.0.0.11)",
       "nginx IPv4 binding (0.0.0.0:80 instead of default IPv6)",
-      "nginx healthcheck: curl instead of wget",
-      ".postcssrc.json missing in Docker build context (Tailwind v4 CSS 25KB vs 91KB)",
+      "nginx healthcheck: wget instead of curl",
+      ".postcssrc.json missing in Docker build context (Tailwind v4 CSS)",
       "Dashboard health check: GET / changed to GET /health",
-      "CSP blocking Google Fonts: added fonts.googleapis.com and fonts.gstatic.com"
+      "CSP blocking Google Fonts",
+      "SUPABASE_KEY not configured on VPS (CRUD endpoints returning empty data)"
     ],
     "security_audit": {
       "status": "PASS",
       "secrets_exposed": 0,
       "date": "2026-03-04"
     },
-    "deployed_at": "2026-03-04T00:00:00.000000"
+    "last_deploy_commit": "01cb447",
+    "deployed_at": "2026-03-06T03:24:00.000000"
   },
-  "last_checkpoint": "cp_20260304_210000",
-  "last_updated": "2026-03-04T21:00:00.000000"
+  "last_checkpoint": "cp_20260306_032400",
+  "last_updated": "2026-03-06T03:30:00.000000"
 }

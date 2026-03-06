@@ -30,6 +30,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/exports/exports.component').then(m => m.ExportsComponent),
   },
   {
+    path: 'informe',
+    loadComponent: () => import('./features/informe/informe.component').then(m => m.InformeComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

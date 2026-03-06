@@ -9,6 +9,7 @@ Estos tests prueban el CODIGO REAL del proyecto:
 
 import math
 import pytest
+from pathlib import Path
 from unittest.mock import patch
 
 from utils.helpers import tokenize_sentence
@@ -211,7 +212,7 @@ class TestViterbiAlgorithm:
         """Viterbi lanza RuntimeError si el modelo no esta entrenado."""
         from services.viterbi_algorithm import viterbi
 
-        with patch("services.hmm_trainer.get_emission_probs", return_value=None):
+        with patch("services.viterbi_algorithm.get_emission_probs", return_value=None):
             with pytest.raises(RuntimeError, match="no está entrenado"):
                 viterbi("Hola mundo")
 
