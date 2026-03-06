@@ -219,7 +219,11 @@ def get_top_transitions(tag: str, direction: str = "from", limit: int = 20) -> l
 
 
 def get_emission_table(top_n: int = 30) -> list[dict]:
-    """Retorna tabla de emisión para los top-N tags y sus palabras más frecuentes."""
+    """Retorna tabla de emisión para los top-N tags y sus palabras más frecuentes.
+
+    Optimized: builds a tag-indexed dict first (O(n)) instead of scanning
+    all emission pairs per tag (O(n*m)).
+    """
     probs = get_emission_probs()
     data = get_corpus_data()
     if not probs or not data:
@@ -230,17 +234,21 @@ def get_emission_table(top_n: int = 30) -> list[dict]:
 
     # Top tags por frecuencia
     sorted_tags = sorted(tag_counts.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    top_tag_set = {tag for tag, _ in sorted_tags}
+
+    # Build tag-indexed dict in a single pass over probs
+    tag_words: dict[str, list] = {tag: [] for tag in top_tag_set}
+    for (t, w), prob in probs.items():
+        if t in top_tag_set:
+            tag_words[t].append({
+                "word": w,
+                "count": emission_counts.get((t, w), 0),
+                "probability": round(prob, 8),
+            })
 
     result = []
     for tag, tag_count in sorted_tags:
-        words = []
-        for (t, w), prob in probs.items():
-            if t == tag:
-                words.append({
-                    "word": w,
-                    "count": emission_counts.get((t, w), 0),
-                    "probability": round(prob, 8),
-                })
+        words = tag_words[tag]
         words.sort(key=lambda x: x["count"], reverse=True)
         result.append({
             "tag": tag,

@@ -17,8 +17,8 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
 
       <!-- ═══════════════ Encabezado ═══════════════ -->
       <div>
-        <h1 class="text-3xl font-bold text-[#2F5496] dark:text-blue-300 mb-1">Gestión del Corpus</h1>
-        <p class="text-gray-500 dark:text-gray-300">
+        <h1 class="text-3xl font-bold text-[#04202C] mb-1">Gestión del Corpus</h1>
+        <p class="text-gray-700">
           Carga, explora y analiza el corpus EAGLES para el etiquetado morfosintáctico.
         </p>
       </div>
@@ -26,8 +26,8 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
       <!-- ═══════════════════════════════════════════════════════ -->
       <!-- SECCIÓN 1 ── Carga del Corpus                           -->
       <!-- ═══════════════════════════════════════════════════════ -->
-      <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-semibold text-[#2F5496] dark:text-blue-300 mb-4 flex items-center gap-2">
+      <section class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+        <h2 class="text-lg font-semibold text-[#04202C] mb-4 flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12"/>
           </svg>
@@ -42,8 +42,8 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
           (click)="fileInput.click()"
           class="relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200"
           [class]="isDragging
-            ? 'border-[#2F5496] dark:border-blue-400 bg-[#2F5496]/5 dark:bg-[#2F5496]/10 dark:bg-blue-500/15 scale-[1.01]'
-            : 'border-gray-300 dark:border-gray-600 hover:border-[#2F5496] dark:border-blue-400/50 hover:bg-gray-50 dark:hover:bg-gray-700/50'">
+            ? 'border-[#04202C] bg-[#04202C]/5 scale-[1.01]'
+            : 'border-gray-300 hover:border-[#04202C] hover:bg-gray-50'">
 
           <input
             #fileInput
@@ -56,31 +56,31 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
 
           @if (droppedFiles.length === 0) {
             <div class="space-y-2">
-              <div class="w-14 h-14 mx-auto rounded-full bg-[#2F5496]/10 dark:bg-blue-500/15 flex items-center justify-center">
-                <svg class="w-7 h-7 text-[#2F5496] dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <div class="w-14 h-14 mx-auto rounded-full bg-[#04202C]/10 flex items-center justify-center">
+                <svg class="w-7 h-7 text-[#04202C]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
                 </svg>
               </div>
-              <p class="text-base font-medium text-gray-700 dark:text-gray-300">
+              <p class="text-base font-medium text-gray-700">
                 Arrastra la carpeta del corpus aquí
               </p>
-              <p class="text-sm text-gray-400 dark:text-gray-300">
-                o haz clic para seleccionar la carpeta con archivos <span class="font-mono text-[#2F5496] dark:text-blue-300">spanishEtiquetado*</span>
+              <p class="text-sm text-gray-800">
+                o haz clic para seleccionar la carpeta con archivos <span class="font-mono text-[#04202C]">spanishEtiquetado*</span>
               </p>
             </div>
           }
 
           @if (droppedFiles.length > 0) {
             <div class="space-y-2">
-              <div class="w-14 h-14 mx-auto rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <div class="w-14 h-14 mx-auto rounded-full bg-green-100 flex items-center justify-center">
+                <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
-              <p class="text-base font-semibold text-green-700 dark:text-green-400">
+              <p class="text-base font-semibold text-green-700">
                 {{ droppedFiles.length }} archivos detectados
               </p>
-              <p class="text-sm text-gray-400 dark:text-gray-300">
+              <p class="text-sm text-gray-800">
                 {{ formatFileSize(totalFileSize) }} en total
               </p>
             </div>
@@ -90,10 +90,10 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
         <!-- Archivos detectados -->
         @if (droppedFiles.length > 0) {
           <div class="mt-4 space-y-4">
-            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 max-h-32 overflow-y-auto">
+            <div class="bg-gray-50 rounded-lg p-3 max-h-32 overflow-y-auto">
               <div class="flex flex-wrap gap-1.5">
                 @for (file of droppedFiles; track file.name) {
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-xs font-mono text-gray-600 dark:text-gray-300">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-gray-200 rounded text-xs font-mono text-gray-800">
                     {{ file.name }}
                   </span>
                 }
@@ -102,26 +102,26 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
 
             <div class="flex flex-wrap items-end gap-4">
               <div class="flex-1 max-w-[200px]">
-                <label class="block text-xs font-medium text-gray-500 dark:text-gray-300 mb-1">Max. archivos</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1">Max. archivos</label>
                 <input
                   type="number"
                   [(ngModel)]="maxFiles"
                   [placeholder]="'Todos (' + droppedFiles.length + ')'"
                   [max]="droppedFiles.length"
                   min="1"
-                  class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-[#2F5496] focus:border-transparent transition"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-[#04202C] focus:border-transparent transition"
                   [disabled]="isProcessing" />
               </div>
               <button
                 (click)="clearFiles()"
                 [disabled]="isProcessing"
-                class="px-4 py-2 text-sm text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition disabled:opacity-50">
+                class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition disabled:opacity-50">
                 Limpiar
               </button>
               <button
                 (click)="processDroppedFiles()"
                 [disabled]="isProcessing || droppedFiles.length === 0"
-                class="inline-flex items-center gap-2 px-5 py-2 bg-[#2F5496] hover:bg-[#244175] text-white text-sm font-medium rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed">
+                class="inline-flex items-center gap-2 px-5 py-2 bg-[#04202C] hover:bg-[#04202C] text-white text-sm font-medium rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed">
                 @if (isProcessing) {
                   <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                 } @else {
@@ -135,14 +135,14 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
 
         <!-- Archivos ya en servidor -->
         @if (droppedFiles.length === 0 && serverFilesCount > 0) {
-          <div class="mt-4 flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <span class="text-sm text-blue-800 dark:text-blue-300">
+          <div class="mt-4 flex items-center justify-between p-3 bg-violet-50 rounded-lg">
+            <span class="text-sm text-violet-800">
               <strong>{{ serverFilesCount }}</strong> archivos del corpus ya disponibles en el servidor.
             </span>
             <button
               (click)="processServerFiles()"
               [disabled]="isProcessing"
-              class="px-4 py-1.5 bg-[#2F5496] hover:bg-[#244175] text-white text-sm font-medium rounded-lg shadow transition disabled:opacity-50">
+              class="px-4 py-1.5 bg-[#04202C] hover:bg-[#04202C] text-white text-sm font-medium rounded-lg shadow transition disabled:opacity-50">
               Procesar
             </button>
           </div>
@@ -152,17 +152,17 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
         @if (isProcessing || uploadStatus) {
           <div class="mt-4">
             @if (isProcessing) {
-              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mb-3 overflow-hidden">
-                <div class="bg-[#2F5496] h-1.5 rounded-full progress-bar-indeterminate"></div>
+              <div class="w-full bg-gray-200 rounded-full h-1.5 mb-3 overflow-hidden">
+                <div class="bg-[#04202C] h-1.5 rounded-full progress-bar-indeterminate"></div>
               </div>
             }
             @if (uploadStatus) {
               <div class="flex items-start gap-2.5 p-3 rounded-lg text-sm"
                    [class]="uploadStatus.status === 'running' || uploadStatus.status === 'started'
-                     ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+                     ? 'bg-violet-50 text-violet-800'
                      : (uploadStatus.status === 'completed' || uploadStatus.status === 'success')
-                       ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300'
-                       : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300'">
+                       ? 'bg-green-50 text-green-800'
+                       : 'bg-red-50 text-red-800'">
                 @if (uploadStatus.status === 'running' || uploadStatus.status === 'started') {
                   <svg class="w-4 h-4 mt-0.5 flex-shrink-0 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                 }
@@ -191,7 +191,7 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
       <!-- SECCIÓN 2 ── Estadísticas del Corpus                    -->
       <!-- ═══════════════════════════════════════════════════════ -->
       <section>
-        <h2 class="text-lg font-semibold text-[#2F5496] dark:text-blue-300 mb-4 flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-[#04202C] mb-4 flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
           </svg>
@@ -201,27 +201,27 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
         <app-loading-spinner [loading]="loadingStats" message="Cargando estadísticas..."></app-loading-spinner>
 
         @if (!loadingStats && (!stats || !stats.is_loaded)) {
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 p-8 text-center">
-            <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <div class="bg-white rounded-xl shadow-md border border-gray-100 p-8 text-center">
+            <svg class="w-12 h-12 mx-auto text-gray-700 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
             </svg>
-            <p class="text-sm text-gray-400 dark:text-gray-300">Procesa el corpus para ver las estadísticas.</p>
+            <p class="text-sm text-gray-800">Procesa el corpus para ver las estadísticas.</p>
           </div>
         }
 
         @if (!loadingStats && stats && stats.is_loaded) {
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             @for (card of statCards; track card.label) {
-              <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow">
+              <div class="bg-white rounded-xl shadow-md border border-gray-100 p-4 hover:shadow-lg transition-shadow">
                 <div class="flex items-center gap-2 mb-2">
-                  <div class="w-8 h-8 rounded-lg bg-[#2F5496]/10 dark:bg-blue-500/15 flex items-center justify-center">
-                    <svg class="w-4 h-4 text-[#2F5496] dark:text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <div class="w-8 h-8 rounded-lg bg-[#04202C]/10 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-[#04202C]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="card.icon"/>
                     </svg>
                   </div>
-                  <span class="text-xs font-medium text-gray-500 dark:text-gray-300">{{ card.label }}</span>
+                  <span class="text-xs font-medium text-gray-700">{{ card.label }}</span>
                 </div>
-                <p class="text-xl font-bold text-[#2F5496] dark:text-blue-300">{{ card.value | number }}</p>
+                <p class="text-xl font-bold text-[#04202C]">{{ card.value | number }}</p>
               </div>
             }
           </div>
@@ -231,8 +231,8 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
       <!-- ═══════════════════════════════════════════════════════ -->
       <!-- SECCIÓN 3 ── Explorador de Palabras                     -->
       <!-- ═══════════════════════════════════════════════════════ -->
-      <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-semibold text-[#2F5496] dark:text-blue-300 mb-4 flex items-center gap-2">
+      <section class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+        <h2 class="text-lg font-semibold text-[#04202C] mb-4 flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
@@ -245,12 +245,12 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
             [(ngModel)]="searchTerm"
             name="searchTerm"
             placeholder="Buscar una palabra en el corpus..."
-            class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2F5496] focus:border-transparent transition"
+            class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-[#04202C] focus:border-transparent transition"
             required />
           <button
             type="submit"
             [disabled]="!searchTerm.trim() || searchingWord"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2F5496] hover:bg-[#244175] text-white font-medium rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed">
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#04202C] hover:bg-[#04202C] text-white font-medium rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed">
             @if (searchingWord) {
               <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
             } @else {
@@ -266,10 +266,10 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
         @if (searchResult && !searchingWord) {
           <div class="space-y-3">
             <div class="flex items-center justify-between flex-wrap gap-2">
-              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Resultados para: <span class="text-[#2F5496] dark:text-blue-300 font-bold">"{{ searchResult.word }}"</span>
+              <h3 class="text-sm font-semibold text-gray-700">
+                Resultados para: <span class="text-[#04202C] font-bold">"{{ searchResult.word }}"</span>
               </h3>
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium bg-[#2F5496]/10 dark:bg-blue-500/15 text-[#2F5496] dark:text-blue-300 rounded-full">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium bg-[#04202C]/10 text-[#04202C] rounded-full">
                 {{ searchResult.total_occurrences | number }} ocurrencias
               </span>
             </div>
@@ -277,16 +277,16 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
             @if (getTagEntries(searchResult.tags).length > 0) {
               <div class="flex flex-wrap gap-2">
                 @for (entry of getTagEntries(searchResult.tags); track entry.tag) {
-                  <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2F5496]/10 dark:bg-blue-500/15 border border-[#2F5496] dark:border-blue-400/20 rounded-full text-sm transition hover:bg-[#2F5496]/20">
-                    <span class="font-mono font-semibold text-[#2F5496] dark:text-blue-300">{{ entry.tag }}</span>
-                    <span class="bg-[#2F5496] text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
+                  <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#04202C]/10 border border-[#04202C] rounded-full text-sm transition hover:bg-[#04202C]/20">
+                    <span class="font-mono font-semibold text-[#04202C]">{{ entry.tag }}</span>
+                    <span class="bg-[#04202C] text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
                       {{ entry.count }}
                     </span>
                   </div>
                 }
               </div>
             } @else {
-              <div class="p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 rounded-lg text-sm">
+              <div class="p-3 bg-yellow-50 text-yellow-700 rounded-lg text-sm">
                 No se encontraron etiquetas asociadas a esta palabra.
               </div>
             }
@@ -294,7 +294,7 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
         }
 
         @if (searchResult === null && searchPerformed && !searchingWord) {
-          <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-gray-500 dark:text-gray-300 text-sm text-center">
+          <div class="p-3 bg-gray-50 rounded-lg text-gray-700 text-sm text-center">
             No se encontraron resultados para la búsqueda.
           </div>
         }
@@ -307,22 +307,22 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
         <app-loading-spinner [loading]="loadingDistribution" message="Cargando distribución..."></app-loading-spinner>
 
         @if (!loadingDistribution && tagDistribution.length > 0) {
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between flex-wrap gap-2">
-              <h2 class="text-lg font-semibold text-[#2F5496] dark:text-blue-300 flex items-center gap-2">
+          <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div class="p-5 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2">
+              <h2 class="text-lg font-semibold text-[#04202C] flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
                 </svg>
                 Distribución de Etiquetas
               </h2>
-              <span class="text-sm text-gray-500 dark:text-gray-300">
-                Total: <strong class="text-[#2F5496] dark:text-blue-300">{{ totalTokensDistribution | number }}</strong> tokens
+              <span class="text-sm text-gray-700">
+                Total: <strong class="text-[#04202C]">{{ totalTokensDistribution | number }}</strong> tokens
               </span>
             </div>
 
             <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
               <table class="w-full text-sm text-left">
-                <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 uppercase text-xs sticky top-0">
+                <thead class="bg-gray-50 text-gray-800 uppercase text-xs sticky top-0">
                   <tr>
                     <th class="px-4 py-2.5 font-semibold">#</th>
                     <th class="px-4 py-2.5 font-semibold">Etiqueta</th>
@@ -331,24 +331,24 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
                     <th class="px-4 py-2.5 font-semibold min-w-[150px]">Distribución</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                <tbody class="divide-y divide-gray-100">
                   @for (tag of tagDistribution; track tag.tag; let i = $index) {
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
-                      <td class="px-4 py-2 text-gray-400 dark:text-gray-300 font-mono text-xs">{{ i + 1 }}</td>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-2 text-gray-700 font-mono text-xs">{{ i + 1 }}</td>
                       <td class="px-4 py-2">
-                        <span class="inline-block px-2 py-0.5 bg-[#2F5496]/10 dark:bg-blue-500/15 text-[#2F5496] dark:text-blue-300 font-mono font-semibold text-xs rounded">
+                        <span class="inline-block px-2 py-0.5 bg-[#04202C]/10 text-[#04202C] font-mono font-semibold text-xs rounded">
                           {{ tag.tag }}
                         </span>
                       </td>
-                      <td class="px-4 py-2 text-right font-medium text-gray-700 dark:text-gray-300">
+                      <td class="px-4 py-2 text-right font-medium text-gray-700">
                         {{ tag.count | number }}
                       </td>
-                      <td class="px-4 py-2 text-right font-medium text-gray-700 dark:text-gray-300">
+                      <td class="px-4 py-2 text-right font-medium text-gray-700">
                         {{ tag.percentage | number:'1.2-2' }}%
                       </td>
                       <td class="px-4 py-2">
-                        <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
-                          <div class="h-1.5 rounded-full bg-[#2F5496] transition-all duration-500"
+                        <div class="flex-1 bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                          <div class="h-1.5 rounded-full bg-[#04202C] transition-all duration-500"
                                [style.width.%]="getBarWidth(tag.percentage)">
                           </div>
                         </div>
@@ -362,11 +362,11 @@ import { CorpusStats, CorpusSearchResult, TagCount, StatusResponse } from '../..
         }
 
         @if (!loadingDistribution && tagDistribution.length === 0) {
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 p-8 text-center">
-            <svg class="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <div class="bg-white rounded-xl shadow-md border border-gray-100 p-8 text-center">
+            <svg class="w-12 h-12 mx-auto text-gray-700 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
             </svg>
-            <p class="text-sm text-gray-400 dark:text-gray-300">Procesa el corpus para ver la distribución de etiquetas.</p>
+            <p class="text-sm text-gray-800">Procesa el corpus para ver la distribución de etiquetas.</p>
           </div>
         }
       </section>

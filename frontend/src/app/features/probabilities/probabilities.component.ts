@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe, SlicePipe } from '@angular/common';
+import { forkJoin } from 'rxjs';
 
 import { ApiService } from '../../core/services/api.service';
 import { EmissionEntry, TransitionEntry } from '../../core/models/probability.model';
@@ -37,10 +38,10 @@ interface SelectedCell {
       <!-- ═══════════════════════════════════════════════════════ -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 animate-fadeInUp">
         <div>
-          <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+          <h1 class="text-lg font-bold text-slate-800 tracking-tight">
             Tablas de Probabilidades
           </h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400">
+          <p class="text-xs text-gray-700">
             Modelo HMM Bigram — Emision, transicion y mapa de calor
           </p>
         </div>
@@ -48,8 +49,8 @@ interface SelectedCell {
           <button
             (click)="trainModel()"
             [disabled]="trainingLoading"
-            class="px-4 py-1.5 bg-[#2F5496] text-white rounded-lg font-medium text-xs
-                   hover:bg-[#244075] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+            class="px-4 py-1.5 bg-[#04202C] text-white rounded-lg font-medium text-xs
+                   hover:bg-[#04202C] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
                    flex items-center gap-1.5 shadow-sm hover:shadow-md whitespace-nowrap">
             @if (trainingLoading) {
               <svg class="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
@@ -71,7 +72,7 @@ interface SelectedCell {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (trainingLoading) {
         <div class="mb-4 rounded-xl overflow-hidden animate-fadeInUp">
-          <div class="relative bg-gradient-to-r from-[#2F5496] via-[#3B6BC4] to-[#2F5496] px-5 py-4">
+          <div class="relative bg-gradient-to-r from-[#04202C] via-[#304040] to-[#04202C] px-5 py-4">
             <!-- Animated shimmer -->
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent training-shimmer"></div>
             <div class="relative flex items-center gap-4">
@@ -83,7 +84,7 @@ interface SelectedCell {
               </div>
               <div>
                 <p class="text-white font-semibold text-sm">Entrenando modelo HMM...</p>
-                <p class="text-blue-100/80 text-xs mt-0.5">
+                <p class="text-violet-100/80 text-xs mt-0.5">
                   Calculando probabilidades de emision y transicion. Esto puede tardar unos minutos.
                 </p>
               </div>
@@ -100,8 +101,8 @@ interface SelectedCell {
       @if (trainingResult && !trainingLoading) {
         <div class="mb-4 rounded-xl px-4 py-3 flex items-center gap-3 animate-fadeInUp"
              [class]="trainingResult.status === 'completed'
-               ? 'bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800'
-               : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'">
+               ? 'bg-emerald-50 border border-emerald-200'
+               : 'bg-red-50 border border-red-200'">
           @if (trainingResult.status === 'completed') {
             <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -113,11 +114,11 @@ interface SelectedCell {
           }
           <p class="text-sm font-medium"
              [class]="trainingResult.status === 'completed'
-               ? 'text-emerald-700 dark:text-emerald-300'
-               : 'text-red-700 dark:text-red-300'">
+               ? 'text-emerald-700'
+               : 'text-red-700'">
             {{ trainingResult.message }}
           </p>
-          <button (click)="trainingResult = null" class="ml-auto text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+          <button (click)="trainingResult = null" class="ml-auto text-gray-700 hover:text-slate-700 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -134,17 +135,17 @@ interface SelectedCell {
           @for (card of modelStatCards; track card.label) {
             <div class="card-base px-3 py-2.5 animate-fadeInUp">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-[9px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <span class="text-[9px] font-semibold uppercase tracking-wider text-gray-800">
                   {{ card.label }}
                 </span>
-                <span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400
+                <span class="w-5 h-5 rounded bg-violet-50 text-violet-500
                              flex items-center justify-center">
                   <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="card.icon"/>
                   </svg>
                 </span>
               </div>
-              <p class="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ card.value }}</p>
+              <p class="text-lg sm:text-2xl font-semibold text-slate-800">{{ card.value }}</p>
             </div>
           }
         </div>
@@ -158,8 +159,8 @@ interface SelectedCell {
         <!-- ── LEFT: Emision ──────────────────────────────── -->
         <section class="card-base overflow-hidden flex flex-col">
           <!-- Toolbar -->
-          <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between gap-2">
-            <h2 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 flex items-center gap-1.5 whitespace-nowrap">
+          <div class="px-3 py-2 border-b border-gray-100 flex items-center justify-between gap-2">
+            <h2 class="text-sm font-semibold text-[#04202C] flex items-center gap-1.5 whitespace-nowrap">
               <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"/>
               </svg>
@@ -172,17 +173,17 @@ interface SelectedCell {
                   [(ngModel)]="emissionFilter"
                   (ngModelChange)="emissionPage = 0"
                   placeholder="Filtrar..."
-                  class="pl-8 pr-3 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
-                         focus:ring-2 focus:ring-[#2F5496]/30 focus:border-[#2F5496] w-24 sm:w-36 transition"/>
-                <svg class="absolute left-2.5 top-2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  class="pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-xs
+                         bg-white text-gray-900
+                         focus:ring-2 focus:ring-[#04202C]/30 focus:border-[#04202C] w-24 sm:w-36 transition"/>
+                <svg class="absolute left-2.5 top-2 w-3.5 h-3.5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
               </div>
               <a [href]="apiService.downloadEmissionExcel()"
-                 class="inline-flex items-center gap-1 px-2 py-1.5 text-xs text-slate-500 dark:text-slate-400
-                        border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50
-                        dark:hover:bg-gray-700 transition" target="_blank" title="Descargar Excel">
+                 class="inline-flex items-center gap-1 px-2 py-1.5 text-xs text-gray-700
+                        border border-gray-200 rounded-lg hover:bg-gray-50
+                        transition" target="_blank" title="Descargar Excel">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -193,20 +194,20 @@ interface SelectedCell {
 
           <!-- Top tag mini-banner -->
           @if (!emissionLoading && emissionData.length > 0) {
-            <div class="px-3 py-2 bg-gradient-to-r from-blue-50/80 to-transparent dark:from-blue-900/10 dark:to-transparent
-                        border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg bg-[#2F5496] text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+            <div class="px-3 py-2 bg-gradient-to-r from-violet-50/80 to-transparent
+                        border-b border-gray-100 flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#04202C] text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
                 {{ emissionData[0].tag.slice(0,2) }}
               </div>
               <div class="min-w-0">
-                <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">
-                  Top: <span class="font-mono text-[#2F5496] dark:text-blue-300">{{ emissionData[0].tag }}</span>
-                  <span class="text-slate-400 font-normal">({{ emissionData[0].tag_count | number }})</span>
+                <p class="text-xs font-semibold text-slate-700 truncate">
+                  Top: <span class="font-mono text-[#04202C]">{{ emissionData[0].tag }}</span>
+                  <span class="text-gray-800 font-normal">({{ emissionData[0].tag_count | number }})</span>
                 </p>
                 <div class="flex gap-1 mt-0.5 flex-wrap">
                   @for (wp of emissionData[0].top_words | slice:0:4; track wp.word) {
-                    <span class="px-1.5 py-px text-[10px] rounded bg-white dark:bg-gray-700
-                                 border border-gray-200 dark:border-gray-600 text-slate-500 dark:text-slate-400">
+                    <span class="px-1.5 py-px text-[10px] rounded bg-white
+                                 border border-gray-200 text-gray-700">
                       {{ wp.word }}
                     </span>
                   }
@@ -220,11 +221,11 @@ interface SelectedCell {
             <div class="p-3 space-y-2 flex-1">
               @for (row of skeletonRowsSmall; track row) {
                 <div class="flex items-center gap-3 animate-pulse">
-                  <div class="w-12 h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div class="w-20 h-3 bg-gray-100 dark:bg-gray-700/60 rounded"></div>
+                  <div class="w-12 h-4 bg-gray-200 rounded"></div>
+                  <div class="w-20 h-3 bg-gray-100 rounded"></div>
                   <div class="flex gap-1 ml-auto">
-                    <div class="w-12 h-4 bg-gray-100 dark:bg-gray-700/60 rounded-full"></div>
-                    <div class="w-10 h-4 bg-gray-100 dark:bg-gray-700/60 rounded-full"></div>
+                    <div class="w-12 h-4 bg-gray-100 rounded-full"></div>
+                    <div class="w-10 h-4 bg-gray-100 rounded-full"></div>
                   </div>
                 </div>
               }
@@ -235,52 +236,52 @@ interface SelectedCell {
           @if (!emissionLoading && filteredEmissions.length > 0) {
             <div class="overflow-x-auto flex-1">
               <table class="w-full text-sm text-left">
-                <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
+                <thead class="bg-gray-50 sticky top-0 z-10">
                   <tr>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700">
                       Etiqueta
                     </th>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700">
                       Descripcion
                     </th>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700 text-right">
                       Total
                     </th>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700">
                       Palabras
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                <tbody class="divide-y divide-gray-100">
                   @for (entry of paginatedEmissions; track entry.tag) {
-                    <tr class="hover:bg-blue-50/40 dark:hover:bg-blue-900/10 transition-colors duration-150">
+                    <tr class="hover:bg-violet-50/40 transition-colors duration-150">
                       <td class="px-3 py-1.5">
-                        <button class="font-mono font-semibold text-[#2F5496] dark:text-blue-300 hover:underline
+                        <button class="font-mono font-semibold text-[#04202C] hover:underline
                                        cursor-pointer bg-transparent border-none p-0 text-sm"
                                 (click)="scrollToTag(entry.tag)">
                           {{ entry.tag }}
                         </button>
                       </td>
-                      <td class="px-3 py-1.5 text-slate-500 dark:text-slate-400 text-xs max-w-[140px] truncate">
+                      <td class="px-3 py-1.5 text-gray-700 text-xs max-w-[140px] truncate">
                         {{ emissionDescriptions[entry.tag] || '\u2014' }}
                       </td>
-                      <td class="px-3 py-1.5 text-right font-mono text-xs text-slate-600 dark:text-slate-300">
+                      <td class="px-3 py-1.5 text-right font-mono text-xs text-gray-800">
                         {{ entry.tag_count | number }}
                       </td>
                       <td class="px-3 py-1.5">
                         <div class="flex flex-wrap gap-1">
                           @for (wp of entry.top_words | slice:0:6; track wp.word) {
                             <span class="inline-flex items-center gap-0.5 px-1.5 py-px rounded-full text-[10px]
-                                         border border-blue-200 dark:border-blue-800
-                                         bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300
-                                         hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors cursor-default"
+                                         border border-violet-200
+                                         bg-violet-50 text-violet-700
+                                         hover:bg-violet-100 transition-colors cursor-default"
                                   [title]="'P(' + wp.word + '|' + entry.tag + ') = ' + wp.probability.toFixed(6)">
                               <span class="font-medium">{{ wp.word }}</span>
-                              <span class="text-blue-400 dark:text-blue-500">{{ wp.probability | number:'1.3-3' }}</span>
+                              <span class="text-slate-700">{{ wp.probability | number:'1.3-3' }}</span>
                             </span>
                           }
                           @if (entry.top_words.length > 6) {
-                            <span class="text-[10px] text-slate-400">+{{ entry.top_words.length - 6 }}</span>
+                            <span class="text-[10px] text-gray-800">+{{ entry.top_words.length - 6 }}</span>
                           }
                         </div>
                       </td>
@@ -291,8 +292,8 @@ interface SelectedCell {
             </div>
 
             <!-- Pagination -->
-            <div class="px-3 py-2 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-              <span class="text-xs text-slate-400 dark:text-slate-500">
+            <div class="px-3 py-2 border-t border-gray-100 flex items-center justify-between">
+              <span class="text-xs text-gray-800">
                 {{ emissionPage * pageSize + 1 }}\u2013{{ emissionPageEnd }} de {{ filteredEmissions.length }}
               </span>
               <div class="flex items-center gap-1">
@@ -322,15 +323,15 @@ interface SelectedCell {
           <!-- Empty states -->
           @if (!emissionLoading && emissionData.length === 0) {
             <div class="text-center py-10 px-4 flex-1 flex flex-col items-center justify-center">
-              <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-10 h-10 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                       d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375"/>
               </svg>
-              <p class="text-xs text-gray-400 dark:text-gray-500">Entrene el modelo primero.</p>
+              <p class="text-xs text-gray-800">Entrene el modelo primero.</p>
             </div>
           }
           @if (!emissionLoading && emissionData.length > 0 && filteredEmissions.length === 0) {
-            <div class="text-center py-10 text-gray-400 dark:text-gray-500 flex-1 flex items-center justify-center">
+            <div class="text-center py-10 text-gray-800 flex-1 flex items-center justify-center">
               <p class="text-xs">Sin coincidencias para "{{ emissionFilter }}".</p>
             </div>
           }
@@ -339,8 +340,8 @@ interface SelectedCell {
         <!-- ── RIGHT: Transiciones ────────────────────────── -->
         <section class="card-base overflow-hidden flex flex-col">
           <!-- Toolbar -->
-          <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between gap-2">
-            <h2 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 flex items-center gap-1.5 whitespace-nowrap">
+          <div class="px-3 py-2 border-b border-gray-100 flex items-center justify-between gap-2">
+            <h2 class="text-sm font-semibold text-[#04202C] flex items-center gap-1.5 whitespace-nowrap">
               <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/>
               </svg>
@@ -353,17 +354,17 @@ interface SelectedCell {
                   [(ngModel)]="transitionFilter"
                   (ngModelChange)="transitionPage = 0"
                   placeholder="Filtrar..."
-                  class="pl-8 pr-3 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-xs
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
-                         focus:ring-2 focus:ring-[#2F5496]/30 focus:border-[#2F5496] w-24 sm:w-36 transition"/>
-                <svg class="absolute left-2.5 top-2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  class="pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-xs
+                         bg-white text-gray-900
+                         focus:ring-2 focus:ring-[#04202C]/30 focus:border-[#04202C] w-24 sm:w-36 transition"/>
+                <svg class="absolute left-2.5 top-2 w-3.5 h-3.5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
               </div>
               <a [href]="apiService.downloadTransitionExcel()"
-                 class="inline-flex items-center gap-1 px-2 py-1.5 text-xs text-slate-500 dark:text-slate-400
-                        border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50
-                        dark:hover:bg-gray-700 transition" target="_blank" title="Descargar Excel">
+                 class="inline-flex items-center gap-1 px-2 py-1.5 text-xs text-gray-700
+                        border border-gray-200 rounded-lg hover:bg-gray-50
+                        transition" target="_blank" title="Descargar Excel">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -377,10 +378,10 @@ interface SelectedCell {
             <div class="p-3 space-y-2 flex-1">
               @for (row of skeletonRowsSmall; track row) {
                 <div class="flex items-center gap-3 animate-pulse">
-                  <div class="w-12 h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div class="w-12 h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div class="w-8 h-3 bg-gray-100 dark:bg-gray-700/60 rounded ml-auto"></div>
-                  <div class="w-20 h-2 bg-gray-100 dark:bg-gray-700/60 rounded-full"></div>
+                  <div class="w-12 h-4 bg-gray-200 rounded"></div>
+                  <div class="w-12 h-4 bg-gray-200 rounded"></div>
+                  <div class="w-8 h-3 bg-gray-100 rounded ml-auto"></div>
+                  <div class="w-20 h-2 bg-gray-100 rounded-full"></div>
                 </div>
               }
             </div>
@@ -390,42 +391,42 @@ interface SelectedCell {
           @if (!transitionLoading && filteredTransitions.length > 0) {
             <div class="overflow-x-auto flex-1">
               <table class="w-full text-sm text-left">
-                <thead class="bg-gray-50 dark:bg-gray-700/50 sticky top-0 z-10">
+                <thead class="bg-gray-50 sticky top-0 z-10">
                   <tr>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700">
                       Previa
                     </th>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700">
                       Siguiente
                     </th>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700 text-right">
                       Conteo
                     </th>
-                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">
+                    <th class="px-3 py-2 font-semibold text-[9px] uppercase tracking-wider text-gray-700 text-right">
                       Probabilidad
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                <tbody class="divide-y divide-gray-100">
                   @for (entry of paginatedTransitions; track entry.tag_prev + entry.tag_next) {
-                    <tr class="hover:bg-blue-50/40 dark:hover:bg-blue-900/10 transition-colors duration-150"
-                        [style.background-color]="highlightedTag && (entry.tag_prev === highlightedTag || entry.tag_next === highlightedTag) ? 'rgba(59, 130, 246, 0.08)' : ''">
-                      <td class="px-3 py-1.5 font-mono font-semibold text-[#2F5496] dark:text-blue-300 text-sm">
+                    <tr class="hover:bg-violet-50/40 transition-colors duration-150"
+                        [style.background-color]="highlightedTag && (entry.tag_prev === highlightedTag || entry.tag_next === highlightedTag) ? 'rgba(4, 32, 44, 0.08)' : ''">
+                      <td class="px-3 py-1.5 font-mono font-semibold text-[#04202C] text-sm">
                         {{ entry.tag_prev }}
                       </td>
-                      <td class="px-3 py-1.5 font-mono font-semibold text-[#2F5496] dark:text-blue-300 text-sm">
+                      <td class="px-3 py-1.5 font-mono font-semibold text-[#04202C] text-sm">
                         {{ entry.tag_next }}
                       </td>
-                      <td class="px-3 py-1.5 text-right font-mono text-xs text-slate-600 dark:text-slate-300">
+                      <td class="px-3 py-1.5 text-right font-mono text-xs text-gray-800">
                         {{ entry.count | number }}
                       </td>
                       <td class="px-3 py-1.5 text-right">
                         <div class="flex items-center justify-end gap-2">
-                          <div class="w-12 sm:w-20 h-1.5 bg-gray-100 dark:bg-gray-600 rounded-full overflow-hidden">
-                            <div class="h-full rounded-full bg-gradient-to-r from-[#2F5496] to-[#3B82F6] transition-all duration-300"
+                          <div class="w-12 sm:w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full bg-gradient-to-r from-[#04202C] to-[#5B7065] transition-all duration-300"
                                  [style.width.%]="entry.probability * 100"></div>
                           </div>
-                          <span class="font-mono text-[10px] w-14 text-right text-slate-500 dark:text-slate-400">
+                          <span class="font-mono text-[10px] w-14 text-right text-gray-700">
                             {{ entry.probability | number:'1.6-6' }}
                           </span>
                         </div>
@@ -437,8 +438,8 @@ interface SelectedCell {
             </div>
 
             <!-- Pagination -->
-            <div class="px-3 py-2 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-              <span class="text-xs text-slate-400 dark:text-slate-500">
+            <div class="px-3 py-2 border-t border-gray-100 flex items-center justify-between">
+              <span class="text-xs text-gray-800">
                 {{ transitionPage * pageSize + 1 }}\u2013{{ transitionPageEnd }} de {{ filteredTransitions.length | number }}
               </span>
               <div class="flex items-center gap-1">
@@ -456,7 +457,7 @@ interface SelectedCell {
                   </button>
                 }
                 @if (transitionTotalPages > 7) {
-                  <span class="text-xs text-slate-400 px-1">\u2026</span>
+                  <span class="text-xs text-gray-800 px-1">\u2026</span>
                   <button (click)="transitionPage = transitionTotalPages - 1"
                           class="pagination-num"
                           [class.pagination-num-active]="transitionPage === transitionTotalPages - 1">
@@ -476,15 +477,15 @@ interface SelectedCell {
           <!-- Empty states -->
           @if (!transitionLoading && transitionData.length === 0) {
             <div class="text-center py-10 px-4 flex-1 flex flex-col items-center justify-center">
-              <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-10 h-10 text-gray-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                       d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/>
               </svg>
-              <p class="text-xs text-gray-400 dark:text-gray-500">Entrene el modelo primero.</p>
+              <p class="text-xs text-gray-800">Entrene el modelo primero.</p>
             </div>
           }
           @if (!transitionLoading && transitionData.length > 0 && filteredTransitions.length === 0) {
-            <div class="text-center py-10 text-gray-400 dark:text-gray-500 flex-1 flex items-center justify-center">
+            <div class="text-center py-10 text-gray-800 flex-1 flex items-center justify-center">
               <p class="text-xs">Sin coincidencias para "{{ transitionFilter }}".</p>
             </div>
           }
@@ -505,17 +506,17 @@ interface SelectedCell {
               </svg>
               Mapa de Calor de Transiciones
               @if (heatmapTags.length > 0) {
-                <span class="text-xs font-normal text-blue-200 ml-1">Top {{ heatmapTags.length }}</span>
+                <span class="text-xs font-normal text-white/60 ml-1">Top {{ heatmapTags.length }}</span>
               }
             </h2>
             @if (selectedCell) {
               <div class="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
                 <span class="text-sm text-white font-mono">
                   {{ selectedCell.rowTag }}
-                  <span class="text-blue-300 mx-1">\u2192</span>
+                  <span class="text-white/60 mx-1">\u2192</span>
                   {{ selectedCell.colTag }}
                 </span>
-                <span class="text-xs text-blue-200">
+                <span class="text-xs text-white/70">
                   P = {{ selectedCell.probability | number:'1.8-8' }}
                 </span>
                 <button (click)="selectedCell = null"
@@ -569,7 +570,7 @@ interface SelectedCell {
                         <td class="text-center font-mono cursor-pointer rounded-[3px] transition-all duration-100"
                             [style.background-color]="getHeatmapColor(getTransitionProb(rowTag, colTag))"
                             [style.color]="getHeatmapTextColor(getTransitionProb(rowTag, colTag))"
-                            [style.outline]="hoveredRow === ri && hoveredCol === ci ? '2px solid #60A5FA' : 'none'"
+                            [style.outline]="hoveredRow === ri && hoveredCol === ci ? '2px solid #04202C' : 'none'"
                             [style.outline-offset]="'-1px'"
                             [style.opacity]="(hoveredRow !== null && hoveredRow !== ri && hoveredCol !== ci) ? 0.45 : 1"
                             [style.transform]="hoveredRow === ri && hoveredCol === ci ? 'scale(1.15)' : 'scale(1)'"
@@ -590,18 +591,18 @@ interface SelectedCell {
 
             <!-- Legend -->
             <div class="px-4 pb-3 flex items-center gap-2 text-[11px]">
-              <span class="font-medium text-blue-200/70">Baja</span>
+              <span class="font-medium text-white/60">Baja</span>
               <div class="flex gap-px">
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#1E3A5F'"></div>
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#1E4D8C'"></div>
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#2563EB'"></div>
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#3B82F6'"></div>
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#60A5FA'"></div>
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#93C5FD'"></div>
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#BFDBFE'"></div>
-                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#EFF6FF'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#04202C'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#1A3036'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#304040'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#5B7065'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#9EADA3'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#C9D1C8'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#DFE4E0'"></div>
+                <div class="w-7 h-3 rounded-sm" [style.background-color]="'#EFF2F0'"></div>
               </div>
-              <span class="font-medium text-blue-200/70">Alta</span>
+              <span class="font-medium text-white/60">Alta</span>
             </div>
           }
 
@@ -633,39 +634,30 @@ interface SelectedCell {
       transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
     .card-base:hover {
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 20px -4px rgba(47, 84, 150, 0.1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 20px -4px rgba(4, 32, 44, 0.1);
     }
-    :host-context(.dark) .card-base {
-      background: rgba(30, 41, 59, 0.5);
-      border-color: rgba(255, 255, 255, 0.04);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-    }
-    :host-context(.dark) .card-base:hover {
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), 0 8px 20px -4px rgba(59, 130, 246, 0.1);
-    }
-
     /* ── Heatmap hero section ──────────────────────── */
     .heatmap-container {
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
-      border: 1px solid rgba(59, 130, 246, 0.15);
-      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.08),
+      background: linear-gradient(135deg, #04202C 0%, #1A3036 50%, #04202C 100%);
+      border: 1px solid rgba(4, 32, 44, 0.15);
+      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(4, 32, 44, 0.08),
                   inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
     .heatmap-toolbar {
-      background: linear-gradient(90deg, rgba(47, 84, 150, 0.3) 0%, rgba(30, 58, 138, 0.2) 100%);
-      border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+      background: linear-gradient(90deg, rgba(4, 32, 44, 0.2) 0%, rgba(48, 64, 64, 0.15) 100%);
+      border-bottom: 1px solid rgba(4, 32, 44, 0.12);
     }
     .heatmap-corner-cell {
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(4, 32, 44, 0.9);
       color: #94A3B8;
     }
     .heatmap-col-idle {
-      background: rgba(30, 41, 59, 0.6);
+      background: rgba(26, 48, 54, 0.7);
       color: #94A3B8;
     }
     .heatmap-col-active {
-      background: rgba(59, 130, 246, 0.2);
-      color: #93C5FD;
+      background: rgba(4, 32, 44, 0.2);
+      color: #C9D1C8;
     }
 
     /* ── Pagination ────────────────────────────────── */
@@ -681,18 +673,11 @@ interface SelectedCell {
     }
     .pagination-btn:hover:not(.pagination-btn-disabled) {
       background: #F1F5F9;
-      color: #2F5496;
+      color: #04202C;
     }
     .pagination-btn-disabled {
       opacity: 0.3;
       cursor: not-allowed;
-    }
-    :host-context(.dark) .pagination-btn {
-      color: #94A3B8;
-    }
-    :host-context(.dark) .pagination-btn:hover:not(.pagination-btn-disabled) {
-      background: rgba(51, 65, 85, 0.5);
-      color: #93C5FD;
     }
     .pagination-num {
       display: flex;
@@ -711,19 +696,9 @@ interface SelectedCell {
       background: #F1F5F9;
     }
     .pagination-num-active {
-      background: #2F5496 !important;
+      background: #04202C !important;
       color: white !important;
-      box-shadow: 0 1px 3px rgba(47, 84, 150, 0.3);
-    }
-    :host-context(.dark) .pagination-num {
-      color: #94A3B8;
-    }
-    :host-context(.dark) .pagination-num:hover {
-      background: rgba(51, 65, 85, 0.5);
-    }
-    :host-context(.dark) .pagination-num-active {
-      background: #2F5496 !important;
-      color: white !important;
+      box-shadow: 0 1px 3px rgba(4, 32, 44, 0.3);
     }
 
     /* ── Training animations ──────────────────────── */
@@ -745,10 +720,11 @@ interface SelectedCell {
     }
   `],
 })
-export class ProbabilitiesComponent implements OnInit {
+export class ProbabilitiesComponent implements OnInit, OnDestroy {
   // --- Training ---
   trainingLoading = false;
   trainingResult: { status: string; message: string } | null = null;
+  private trainingPollTimer: ReturnType<typeof setInterval> | null = null;
 
   // --- Model Stats ---
   modelStats: ModelStats | null = null;
@@ -784,8 +760,46 @@ export class ProbabilitiesComponent implements OnInit {
   constructor(public apiService: ApiService) {}
 
   ngOnInit(): void {
-    this.loadEmissionTable();
-    this.loadTransitionTable();
+    this.loadTablesParallel();
+  }
+
+  ngOnDestroy(): void {
+    this.stopPolling();
+  }
+
+  private stopPolling(): void {
+    if (this.trainingPollTimer) {
+      clearInterval(this.trainingPollTimer);
+      this.trainingPollTimer = null;
+    }
+  }
+
+  private loadTablesParallel(): void {
+    this.emissionLoading = true;
+    this.transitionLoading = true;
+
+    forkJoin({
+      emission: this.apiService.getEmissionTable(30),
+      transition: this.apiService.getTransitionTable(),
+    }).subscribe({
+      next: ({ emission, transition }: any) => {
+        this.emissionData = emission.entries || emission || [];
+        this.emissionPage = 0;
+        this.loadEmissionDescriptions();
+        this.emissionLoading = false;
+
+        this.transitionData = transition.entries || transition || [];
+        this.transitionPage = 0;
+        this.buildHeatmap();
+        this.transitionLoading = false;
+      },
+      error: () => {
+        this.emissionData = [];
+        this.emissionLoading = false;
+        this.transitionData = [];
+        this.transitionLoading = false;
+      },
+    });
   }
 
   // ── Stat cards ─────────────────────────────────────────
@@ -826,21 +840,17 @@ export class ProbabilitiesComponent implements OnInit {
   trainModel(): void {
     this.trainingLoading = true;
     this.trainingResult = null;
+    this.stopPolling();
+
     this.apiService.trainModel().subscribe({
       next: (res) => {
-        this.trainingResult = { status: res.status, message: res.message };
-        this.trainingLoading = false;
-        if (res.detail) {
-          this.modelStats = {
-            emission_count: res.detail['emission_count'] || 0,
-            transition_count: res.detail['transition_count'] || 0,
-            unique_tags: res.detail['unique_tags'] || 0,
-            vocabulary_size: res.detail['vocabulary_size'] || 0,
-            smoothing_alpha: res.detail['smoothing_alpha'] ?? 1.0,
-          };
+        if (res.status === 'running' && res.detail?.['task_id']) {
+          // Async mode — poll for completion
+          this.pollTrainingStatus(res.detail['task_id']);
+        } else {
+          // Sync fallback — completed immediately
+          this.onTrainingComplete(res);
         }
-        this.loadEmissionTable();
-        this.loadTransitionTable();
       },
       error: (err) => {
         this.trainingResult = {
@@ -850,6 +860,59 @@ export class ProbabilitiesComponent implements OnInit {
         this.trainingLoading = false;
       },
     });
+  }
+
+  private pollTrainingStatus(taskId: string): void {
+    this.trainingPollTimer = setInterval(() => {
+      this.apiService.getTrainingStatus(taskId).subscribe({
+        next: (status: any) => {
+          if (status.state === 'COMPLETED') {
+            this.stopPolling();
+            this.trainingResult = {
+              status: 'completed',
+              message: status.message || 'Modelo HMM entrenado exitosamente.',
+            };
+            if (status.stats) {
+              this.modelStats = {
+                emission_count: status.stats['emission_count'] || 0,
+                transition_count: status.stats['transition_count'] || 0,
+                unique_tags: status.stats['unique_tags'] || 0,
+                vocabulary_size: status.stats['vocabulary_size'] || 0,
+                smoothing_alpha: status.stats['smoothing_alpha'] ?? 1.0,
+              };
+            }
+            this.trainingLoading = false;
+            this.loadTablesParallel();
+          } else if (status.state === 'FAILED') {
+            this.stopPolling();
+            this.trainingResult = {
+              status: 'error',
+              message: status.error || 'Error durante el entrenamiento.',
+            };
+            this.trainingLoading = false;
+          }
+          // RUNNING/PENDING — keep polling
+        },
+        error: () => {
+          // Network error during poll — keep trying
+        },
+      });
+    }, 2000);
+  }
+
+  private onTrainingComplete(res: any): void {
+    this.trainingResult = { status: res.status, message: res.message };
+    this.trainingLoading = false;
+    if (res.detail) {
+      this.modelStats = {
+        emission_count: res.detail['emission_count'] || 0,
+        transition_count: res.detail['transition_count'] || 0,
+        unique_tags: res.detail['unique_tags'] || 0,
+        vocabulary_size: res.detail['vocabulary_size'] || 0,
+        smoothing_alpha: res.detail['smoothing_alpha'] ?? 1.0,
+      };
+    }
+    this.loadTablesParallel();
   }
 
   // ── Emission ───────────────────────────────────────────
@@ -1001,14 +1064,14 @@ export class ProbabilitiesComponent implements OnInit {
 
   getHeatmapColor(probability: number): string {
     if (probability <= 0) return 'rgba(255,255,255,0.03)';
-    if (probability < 0.02) return '#1E3A5F';
-    if (probability < 0.05) return '#1E4D8C';
-    if (probability < 0.10) return '#2563EB';
-    if (probability < 0.20) return '#3B82F6';
-    if (probability < 0.35) return '#60A5FA';
-    if (probability < 0.50) return '#93C5FD';
-    if (probability < 0.70) return '#BFDBFE';
-    return '#EFF6FF';
+    if (probability < 0.02) return '#04202C';
+    if (probability < 0.05) return '#1A3036';
+    if (probability < 0.10) return '#304040';
+    if (probability < 0.20) return '#5B7065';
+    if (probability < 0.35) return '#9EADA3';
+    if (probability < 0.50) return '#C9D1C8';
+    if (probability < 0.70) return '#DFE4E0';
+    return '#EFF2F0';
   }
 
   getHeatmapTextColor(probability: number): string {

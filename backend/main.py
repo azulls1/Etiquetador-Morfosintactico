@@ -12,6 +12,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 from config import CORS_ORIGINS, ENV
+from models.database import ensure_tables
 
 # Configurar logging
 logging.basicConfig(
@@ -53,7 +54,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "Accept"],
 )
 
@@ -65,11 +66,16 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    response.headers["Cache-Control"] = "no-store"
+    # Allow browsers to cache probability tables for 5 min
+    path = request.url.path
+    if path.endswith("/table"):
+        response.headers["Cache-Control"] = "private, max-age=300"
+    else:
+        response.headers["Cache-Control"] = "no-store"
     return response
 
 # Registrar routers
-from routers import corpus, probabilities, viterbi, exports, tags, evaluation
+from routers import corpus, probabilities, viterbi, exports, tags, evaluation, sentences, analysis, eagles_data
 
 app.include_router(corpus.router)
 app.include_router(probabilities.router)
@@ -77,6 +83,18 @@ app.include_router(viterbi.router)
 app.include_router(exports.router)
 app.include_router(tags.router)
 app.include_router(evaluation.router)
+app.include_router(sentences.router)
+app.include_router(analysis.router)
+app.include_router(eagles_data.router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Inicializa tablas en Supabase al arrancar."""
+    try:
+        ensure_tables()
+    except Exception as e:
+        logger.error("Failed to initialize database tables: %s", e)
 
 
 @app.get("/")
@@ -94,6 +112,8 @@ async def root():
             "exports": "/api/exports",
             "tags": "/api/tags",
             "evaluation": "/api/evaluation",
+            "sentences": "/api/sentences",
+            "analysis": "/api/analysis",
         },
     }
 

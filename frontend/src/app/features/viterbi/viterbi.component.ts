@@ -23,10 +23,10 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 animate-fadeInUp">
         <div>
-          <h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+          <h1 class="text-lg font-bold text-slate-800 tracking-tight">
             Algoritmo de Viterbi
           </h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400">
+          <p class="text-xs text-gray-700">
             Etiquetado morfosintactico con HMM Bigram + Viterbi — Corpus EAGLES
           </p>
         </div>
@@ -34,8 +34,8 @@ interface HistoryEntry {
           <button
             (click)="exportExcel()"
             [disabled]="exporting"
-            class="px-4 py-1.5 text-xs font-medium rounded-lg border border-[#2F5496] dark:border-blue-400
-                   text-[#2F5496] dark:text-blue-300 hover:bg-[#2F5496]/10 dark:hover:bg-blue-500/15
+            class="px-4 py-1.5 text-xs font-medium rounded-lg border border-[#04202C]
+                   text-[#04202C] hover:bg-[#04202C]/10
                    transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
                    flex items-center gap-1.5 shadow-sm whitespace-nowrap">
             @if (exporting) {
@@ -60,7 +60,7 @@ interface HistoryEntry {
       <div class="card-base p-4 mb-3 animate-fadeInUp" style="animation-delay: 40ms">
         <div class="flex flex-col sm:flex-row gap-2.5">
           <div class="relative flex-1">
-            <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
@@ -68,16 +68,16 @@ interface HistoryEntry {
               type="text"
               [(ngModel)]="sentence"
               placeholder="Escribe una oracion en espanol..."
-              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600
-                     bg-white dark:bg-gray-700 text-sm text-gray-800 dark:text-gray-100
-                     focus:ring-2 focus:ring-[#2F5496]/30 focus:border-[#2F5496] outline-none transition"
+              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200
+                     bg-white text-sm text-gray-800
+                     focus:ring-2 focus:ring-[#04202C]/30 focus:border-[#04202C] outline-none transition"
               (keydown.enter)="tagSentence()" />
           </div>
           <button
             (click)="tagSentence()"
             [disabled]="loading || !sentence.trim()"
-            class="px-5 py-2 bg-[#2F5496] text-white rounded-lg text-sm font-semibold
-                   hover:bg-[#244078] transition-all duration-200 disabled:opacity-50
+            class="px-5 py-2 bg-white text-black border border-gray-300 rounded-lg text-sm font-semibold
+                   hover:bg-gray-100 transition-all duration-200 disabled:opacity-50
                    disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap shadow-sm">
             @if (loading) {
               <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
@@ -96,16 +96,16 @@ interface HistoryEntry {
 
         <!-- Quick sentences -->
         <div class="flex flex-wrap items-center gap-2 mt-3">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-800">
             Requeridas:
           </span>
           @for (s of quickSentences; track $index) {
             <button
               (click)="loadSentence(s)"
               class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all duration-150
-                     border-blue-200 dark:border-blue-800 bg-blue-50/60 dark:bg-blue-900/20
-                     text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:shadow-sm">
-              <span class="flex items-center justify-center w-4 h-4 rounded-full bg-[#2F5496] text-[9px] font-bold text-white">
+                     border-violet-200 bg-violet-50/60
+                     text-violet-600 hover:bg-violet-100 hover:shadow-sm">
+              <span class="flex items-center justify-center w-4 h-4 rounded-full bg-[#04202C] text-[9px] font-bold text-white">
                 {{ $index + 1 }}
               </span>
               {{ s }}
@@ -119,14 +119,14 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (error) {
         <div class="mb-3 rounded-xl px-4 py-3 flex items-center gap-3 animate-fadeInUp
-                    bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                    bg-red-50 border border-red-200">
           <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p class="text-sm font-medium text-red-700 dark:text-red-300 flex-1">{{ error }}</p>
+          <p class="text-sm font-medium text-red-700 flex-1">{{ error }}</p>
           <button (click)="error = null"
-                  class="text-red-400 hover:text-red-600 dark:hover:text-red-200 transition">
+                  class="text-red-400 hover:text-red-600 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
@@ -139,7 +139,7 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (loading) {
         <div class="mb-3 rounded-xl overflow-hidden animate-fadeInUp">
-          <div class="relative bg-gradient-to-r from-[#2F5496] via-[#3B6BC4] to-[#2F5496] px-5 py-4">
+          <div class="relative bg-gradient-to-r from-[#04202C] via-[#304040] to-[#04202C] px-5 py-4">
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent viterbi-shimmer"></div>
             <div class="relative flex items-center gap-4">
               <div class="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0">
@@ -150,7 +150,7 @@ interface HistoryEntry {
               </div>
               <div>
                 <p class="text-white font-semibold text-sm">Ejecutando algoritmo de Viterbi...</p>
-                <p class="text-blue-100/80 text-xs mt-0.5">
+                <p class="text-violet-100/80 text-xs mt-0.5">
                   Calculando camino optimo sobre la trellis HMM
                 </p>
               </div>
@@ -170,17 +170,17 @@ interface HistoryEntry {
           @for (card of resultStatCards; track card.label) {
             <div class="card-base px-3 py-2.5">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-[9px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <span class="text-[9px] font-semibold uppercase tracking-wider text-gray-800">
                   {{ card.label }}
                 </span>
-                <span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400
+                <span class="w-5 h-5 rounded bg-violet-50 text-violet-500
                              flex items-center justify-center">
                   <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="card.icon"/>
                   </svg>
                 </span>
               </div>
-              <p class="text-lg font-semibold text-slate-800 dark:text-slate-100">{{ card.value }}</p>
+              <p class="text-lg font-semibold text-slate-800">{{ card.value }}</p>
             </div>
           }
         </div>
@@ -191,22 +191,22 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (result && !loading) {
         <div class="card-base overflow-hidden mb-3 animate-fadeInUp" style="animation-delay: 80ms">
-          <div class="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 flex items-center gap-1.5">
+          <div class="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-[#04202C] flex items-center gap-1.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/>
               </svg>
               Resultado del etiquetado
             </h2>
-            <span class="font-mono text-[10px] bg-[#2F5496]/10 dark:bg-blue-500/15 text-[#2F5496] dark:text-blue-300 px-2.5 py-1 rounded-full">
+            <span class="font-mono text-[10px] bg-[#04202C]/10 text-[#04202C] px-2.5 py-1 rounded-full">
               P = {{ formatScientific(result.best_path_prob) }}
             </span>
           </div>
 
           <div class="p-4">
             <!-- Sentence -->
-            <p class="text-xs text-slate-500 dark:text-slate-400 italic mb-3">
+            <p class="text-xs text-gray-700 italic mb-3">
               &laquo;{{ result.sentence }}&raquo;
             </p>
 
@@ -214,16 +214,17 @@ interface HistoryEntry {
             <div class="flex flex-wrap gap-2">
               @for (token of result.tokens; track $index) {
                 <div class="group relative flex flex-col items-center gap-1 rounded-lg px-3 py-2
-                            bg-gray-50/80 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-600
-                            hover:border-[#2F5496]/30 dark:hover:border-blue-500/30
+                            bg-gray-50/80 border border-gray-200
+                            hover:border-[#04202C]/30
                             hover:shadow-sm transition-all duration-150">
-                  <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ token }}</span>
+                  <span class="text-sm font-semibold text-slate-800">{{ token }}</span>
                   <span
-                    class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide text-white shadow-sm"
-                    [style.background-color]="getTagColor(result.tags[$index])">
+                    class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide text-[#04202C] border"
+                    [style.background-color]="getTagBgColor(result.tags[$index])"
+                    [style.border-color]="getTagColor(result.tags[$index]) + '30'">
                     {{ result.tags[$index] }}
                   </span>
-                  <span class="text-[10px] text-slate-400 dark:text-slate-500 text-center max-w-[120px] leading-tight">
+                  <span class="text-[10px] text-gray-800 text-center max-w-[120px] leading-tight">
                     {{ result.descriptions[$index] || '\u2014' }}
                   </span>
                 </div>
@@ -247,15 +248,15 @@ interface HistoryEntry {
                     d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 0v1.5"/>
                 </svg>
                 Matriz de Viterbi
-                <span class="text-xs font-normal text-blue-200 ml-1">{{ matrixTags.length }} estados &times; {{ result.tokens.length }} obs.</span>
+                <span class="text-xs font-normal text-white/60 ml-1">{{ matrixTags.length }} estados &times; {{ result.tokens.length }} obs.</span>
               </h2>
               <div class="flex items-center gap-3">
                 @if (selectedMatrixCell) {
                   <div class="flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 backdrop-blur-sm text-xs">
                     <span class="text-white font-mono font-semibold">{{ selectedMatrixCell.tag }}</span>
-                    <span class="text-blue-300">&rarr;</span>
+                    <span class="text-white/60">&rarr;</span>
                     <span class="text-white font-medium">{{ selectedMatrixCell.token }}</span>
-                    <span class="text-blue-200">P = {{ formatScientific(selectedMatrixCell.prob) }}</span>
+                    <span class="text-white/70">P = {{ formatScientific(selectedMatrixCell.prob) }}</span>
                     <button (click)="selectedMatrixCell = null"
                             class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/30 transition">
                       <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,15 +272,15 @@ interface HistoryEntry {
             <div class="px-4 py-2 flex items-center gap-4 text-[10px] border-b border-white/5">
               <div class="flex items-center gap-1.5">
                 <div class="w-3 h-3 rounded-sm bg-green-500/60 border border-green-400/40"></div>
-                <span class="text-blue-200/70">Camino optimo</span>
+                <span class="text-white/60">Camino optimo</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <div class="w-3 h-3 rounded-sm" style="background: #2563EB;"></div>
-                <span class="text-blue-200/70">Probabilidad alta</span>
+                <div class="w-3 h-3 rounded-sm" style="background: #04202C;"></div>
+                <span class="text-white/60">Probabilidad alta</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <div class="w-3 h-3 rounded-sm" style="background: #1E3A5F;"></div>
-                <span class="text-blue-200/70">Probabilidad baja</span>
+                <div class="w-3 h-3 rounded-sm" style="background: #304040;"></div>
+                <span class="text-white/60">Probabilidad baja</span>
               </div>
             </div>
 
@@ -311,7 +312,7 @@ interface HistoryEntry {
                         <td class="text-center font-mono cursor-pointer rounded-[3px] transition-all duration-100 relative"
                             [style.background-color]="isOptimalCell(ci, tag) ? 'rgba(34, 197, 94, 0.25)' : getMatrixCellColor(getMatrixValue(ci, tag))"
                             [style.color]="isOptimalCell(ci, tag) ? '#86EFAC' : getMatrixTextColor(getMatrixValue(ci, tag))"
-                            [style.outline]="matrixHoveredRow === ri && matrixHoveredCol === ci ? '2px solid #60A5FA' : (isOptimalCell(ci, tag) ? '1px solid rgba(34, 197, 94, 0.4)' : 'none')"
+                            [style.outline]="matrixHoveredRow === ri && matrixHoveredCol === ci ? '2px solid #04202C' : (isOptimalCell(ci, tag) ? '1px solid rgba(34, 197, 94, 0.4)' : 'none')"
                             [style.outline-offset]="'-1px'"
                             [style.opacity]="(matrixHoveredRow !== null && matrixHoveredRow !== ri && matrixHoveredCol !== ci) ? 0.4 : 1"
                             [style.transform]="matrixHoveredRow === ri && matrixHoveredCol === ci ? 'scale(1.1)' : 'scale(1)'"
@@ -348,8 +349,8 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (result && !loading && result.steps && result.steps.length > 0) {
         <div class="card-base overflow-hidden mb-3 animate-fadeInUp" style="animation-delay: 160ms">
-          <div class="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 flex items-center gap-1.5">
+          <div class="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-[#04202C] flex items-center gap-1.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"/>
@@ -357,7 +358,7 @@ interface HistoryEntry {
               Ejecucion paso a paso
             </h2>
             <button (click)="stepsExpanded = !stepsExpanded"
-                    class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition flex items-center gap-1">
+                    class="text-xs text-gray-800 hover:text-slate-800 transition flex items-center gap-1">
               {{ stepsExpanded ? 'Colapsar' : 'Expandir' }}
               <svg class="w-3.5 h-3.5 transition-transform duration-200"
                    [class.rotate-180]="stepsExpanded"
@@ -371,36 +372,35 @@ interface HistoryEntry {
             <div class="p-4">
               <div class="relative">
                 <!-- Timeline line -->
-                <div class="absolute left-[15px] top-4 bottom-4 w-px bg-gradient-to-b from-blue-300 via-slate-300 to-indigo-300 dark:from-blue-700 dark:via-slate-600 dark:to-indigo-700"></div>
+                <div class="absolute left-[15px] top-4 bottom-4 w-px bg-gradient-to-b from-violet-300 via-slate-300 to-indigo-300"></div>
 
                 <div class="space-y-1.5">
                   @for (step of result.steps; track $index) {
                     <div class="relative flex items-start gap-3 pl-1 py-1.5">
                       <!-- Dot -->
-                      <div class="relative z-10 flex items-center justify-center w-[30px] h-[30px] rounded-full shrink-0 text-[10px] font-bold shadow-sm"
-                           [class]="$index === 0 ? 'bg-blue-500 text-white' : ($index === result.steps.length - 1 ? 'bg-indigo-500 text-white' : 'bg-white dark:bg-gray-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600')">
+                      <div class="relative z-10 flex items-center justify-center w-[30px] h-[30px] rounded-full shrink-0 text-[10px] font-bold shadow-sm bg-[#04202C] text-white">
                         {{ $index + 1 }}
                       </div>
 
                       <!-- Content -->
                       <div class="flex-1 min-w-0 pt-0.5">
                         <div class="flex flex-wrap items-center gap-1.5">
-                          <span class="text-[11px] font-semibold"
-                                [class]="$index === 0 ? 'text-blue-600 dark:text-blue-400' : ($index === result.steps.length - 1 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-200')">
+                          <span class="text-[11px] font-semibold text-[#04202C]">
                             {{ getStepLabel($index) }}
                           </span>
-                          <span class="font-mono text-[11px] text-[#2F5496] dark:text-blue-300 font-bold">&laquo;{{ step.token }}&raquo;</span>
-                          <span class="text-slate-300 dark:text-slate-600">&rarr;</span>
+                          <span class="font-mono text-[11px] text-[#04202C] font-bold">&laquo;{{ step.token }}&raquo;</span>
+                          <span class="text-gray-700">&rarr;</span>
                           <span
-                            class="inline-block rounded-full px-1.5 py-px text-[9px] font-bold text-white"
-                            [style.background-color]="getTagColor(step.tag)">
+                            class="inline-block rounded-full px-1.5 py-px text-[9px] font-bold text-[#04202C] border"
+                            [style.background-color]="getTagBgColor(step.tag)"
+                            [style.border-color]="getTagColor(step.tag) + '30'">
                             {{ step.tag }}
                           </span>
-                          <span class="font-mono text-[10px] text-slate-400 dark:text-slate-500">
+                          <span class="font-mono text-[10px] text-gray-800">
                             {{ formatScientific(step.probability) }}
                           </span>
                         </div>
-                        <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">{{ step.description }}</p>
+                        <p class="text-[10px] text-gray-800 mt-0.5">{{ step.description }}</p>
                       </div>
                     </div>
                   }
@@ -416,47 +416,48 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (resultA && resultB && !loading) {
         <div class="card-base overflow-hidden mb-3 animate-fadeInUp" style="animation-delay: 200ms">
-          <div class="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
-            <h2 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 flex items-center gap-1.5">
+          <div class="px-4 py-2.5 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-[#04202C] flex items-center gap-1.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/>
               </svg>
               Comparacion de etiquetados
               @if (comparisonDiffs.length > 0) {
-                <span class="ml-2 px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-[10px] font-bold">
+                <span class="ml-2 px-2 py-0.5 rounded-full bg-orange-100 text-orange-600 text-[10px] font-bold">
                   {{ comparisonDiffs.length }} diferencia{{ comparisonDiffs.length !== 1 ? 's' : '' }}
                 </span>
               } @else {
-                <span class="ml-2 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                <span class="ml-2 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-bold">
                   Identicas
                 </span>
               }
             </h2>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-700">
+          <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
             <!-- Sentence A -->
             <div class="p-4">
               <div class="flex items-center gap-2 mb-2">
-                <span class="w-5 h-5 rounded-full bg-[#2F5496] text-white text-[10px] font-bold flex items-center justify-center">1</span>
-                <p class="text-xs text-slate-500 dark:text-slate-400 italic truncate">&laquo;{{ resultA.sentence }}&raquo;</p>
+                <span class="w-5 h-5 rounded-full bg-[#04202C] text-white text-[10px] font-bold flex items-center justify-center">1</span>
+                <p class="text-xs text-gray-700 italic truncate">&laquo;{{ resultA.sentence }}&raquo;</p>
               </div>
               <div class="flex flex-wrap gap-1.5">
                 @for (token of resultA.tokens; track $index) {
                   <div class="flex flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 border transition-colors duration-150"
                        [class]="isDifferentTag(token, resultA.tags[$index], 'A')
-                         ? 'border-orange-300 bg-orange-50 dark:border-orange-700 dark:bg-orange-900/15'
-                         : 'border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700/50'">
-                    <span class="text-[11px] font-medium text-slate-700 dark:text-slate-200">{{ token }}</span>
-                    <span class="inline-block rounded-full px-1.5 py-px text-[9px] font-bold text-white"
-                          [style.background-color]="getTagColor(resultA.tags[$index])">
+                         ? 'border-orange-300 bg-orange-50'
+                         : 'border-gray-200 bg-gray-50'">
+                    <span class="text-[11px] font-medium text-slate-700">{{ token }}</span>
+                    <span class="inline-block rounded-full px-1.5 py-px text-[9px] font-bold text-[#04202C] border"
+                          [style.background-color]="getTagBgColor(resultA.tags[$index])"
+                          [style.border-color]="getTagColor(resultA.tags[$index]) + '30'">
                       {{ resultA.tags[$index] }}
                     </span>
                   </div>
                 }
               </div>
-              <p class="text-[10px] font-mono text-slate-400 dark:text-slate-500 mt-2">
+              <p class="text-[10px] font-mono text-gray-800 mt-2">
                 P = {{ formatScientific(resultA.best_path_prob) }}
               </p>
             </div>
@@ -464,24 +465,25 @@ interface HistoryEntry {
             <!-- Sentence B -->
             <div class="p-4">
               <div class="flex items-center gap-2 mb-2">
-                <span class="w-5 h-5 rounded-full bg-[#2F5496] text-white text-[10px] font-bold flex items-center justify-center">2</span>
-                <p class="text-xs text-slate-500 dark:text-slate-400 italic truncate">&laquo;{{ resultB.sentence }}&raquo;</p>
+                <span class="w-5 h-5 rounded-full bg-[#04202C] text-white text-[10px] font-bold flex items-center justify-center">2</span>
+                <p class="text-xs text-gray-700 italic truncate">&laquo;{{ resultB.sentence }}&raquo;</p>
               </div>
               <div class="flex flex-wrap gap-1.5">
                 @for (token of resultB.tokens; track $index) {
                   <div class="flex flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 border transition-colors duration-150"
                        [class]="isDifferentTag(token, resultB.tags[$index], 'B')
-                         ? 'border-orange-300 bg-orange-50 dark:border-orange-700 dark:bg-orange-900/15'
-                         : 'border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700/50'">
-                    <span class="text-[11px] font-medium text-slate-700 dark:text-slate-200">{{ token }}</span>
-                    <span class="inline-block rounded-full px-1.5 py-px text-[9px] font-bold text-white"
-                          [style.background-color]="getTagColor(resultB.tags[$index])">
+                         ? 'border-orange-300 bg-orange-50'
+                         : 'border-gray-200 bg-gray-50'">
+                    <span class="text-[11px] font-medium text-slate-700">{{ token }}</span>
+                    <span class="inline-block rounded-full px-1.5 py-px text-[9px] font-bold text-[#04202C] border"
+                          [style.background-color]="getTagBgColor(resultB.tags[$index])"
+                          [style.border-color]="getTagColor(resultB.tags[$index]) + '30'">
                       {{ resultB.tags[$index] }}
                     </span>
                   </div>
                 }
               </div>
-              <p class="text-[10px] font-mono text-slate-400 dark:text-slate-500 mt-2">
+              <p class="text-[10px] font-mono text-gray-800 mt-2">
                 P = {{ formatScientific(resultB.best_path_prob) }}
               </p>
             </div>
@@ -489,26 +491,28 @@ interface HistoryEntry {
 
           <!-- Differences table -->
           @if (comparisonDiffs.length > 0) {
-            <div class="border-t border-gray-100 dark:border-gray-700 overflow-x-auto">
+            <div class="border-t border-gray-100 overflow-x-auto">
               <table class="min-w-full text-xs">
                 <thead>
-                  <tr class="bg-orange-50/50 dark:bg-orange-900/10">
-                    <th class="px-4 py-2 text-left font-semibold text-[9px] uppercase tracking-wider text-orange-600 dark:text-orange-400">Token</th>
-                    <th class="px-4 py-2 text-center font-semibold text-[9px] uppercase tracking-wider text-orange-600 dark:text-orange-400">Oracion 1</th>
-                    <th class="px-4 py-2 text-center font-semibold text-[9px] uppercase tracking-wider text-orange-600 dark:text-orange-400">Oracion 2</th>
+                  <tr class="bg-orange-50/50">
+                    <th class="px-4 py-2 text-left font-semibold text-[9px] uppercase tracking-wider text-orange-600">Token</th>
+                    <th class="px-4 py-2 text-center font-semibold text-[9px] uppercase tracking-wider text-orange-600">Oracion 1</th>
+                    <th class="px-4 py-2 text-center font-semibold text-[9px] uppercase tracking-wider text-orange-600">Oracion 2</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                <tbody class="divide-y divide-gray-100">
                   @for (diff of comparisonDiffs; track diff.token) {
-                    <tr class="hover:bg-orange-50/30 dark:hover:bg-orange-900/5 transition-colors">
-                      <td class="px-4 py-1.5 font-medium text-slate-700 dark:text-slate-200">{{ diff.token }}</td>
+                    <tr class="hover:bg-orange-50/30 transition-colors">
+                      <td class="px-4 py-1.5 font-medium text-slate-700">{{ diff.token }}</td>
                       <td class="px-4 py-1.5 text-center">
-                        <span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
-                              [style.background-color]="getTagColor(diff.tagA)">{{ diff.tagA }}</span>
+                        <span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold text-[#04202C] border"
+                              [style.background-color]="getTagBgColor(diff.tagA)"
+                              [style.border-color]="getTagColor(diff.tagA) + '30'">{{ diff.tagA }}</span>
                       </td>
                       <td class="px-4 py-1.5 text-center">
-                        <span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
-                              [style.background-color]="getTagColor(diff.tagB)">{{ diff.tagB }}</span>
+                        <span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-bold text-[#04202C] border"
+                              [style.background-color]="getTagBgColor(diff.tagB)"
+                              [style.border-color]="getTagColor(diff.tagB) + '30'">{{ diff.tagB }}</span>
                       </td>
                     </tr>
                   }
@@ -524,40 +528,41 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (history.length > 0 && !loading) {
         <div class="card-base overflow-hidden mb-0 animate-fadeInUp" style="animation-delay: 240ms">
-          <div class="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-[#2F5496] dark:text-blue-300 flex items-center gap-1.5">
+          <div class="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-[#04202C] flex items-center gap-1.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
               </svg>
               Historial reciente
-              <span class="text-xs font-normal text-slate-400 ml-1">({{ history.length }})</span>
+              <span class="text-xs font-normal text-gray-800 ml-1">({{ history.length }})</span>
             </h2>
           </div>
 
-          <div class="divide-y divide-gray-100 dark:divide-gray-700/50">
+          <div class="divide-y divide-gray-100">
             @for (entry of history | slice:0:5; track $index) {
               <button
-                class="w-full px-4 py-2.5 text-left hover:bg-blue-50/40 dark:hover:bg-blue-900/10 transition-colors duration-150 flex items-center gap-3"
+                class="w-full px-4 py-2.5 text-left hover:bg-violet-50/40 transition-colors duration-150 flex items-center gap-3"
                 (click)="loadFromHistory(entry)">
-                <div class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                  <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                  <svg class="w-3 h-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                   </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-xs text-slate-700 dark:text-slate-200 truncate">{{ entry.sentence }}</p>
+                  <p class="text-xs text-slate-700 truncate">{{ entry.sentence }}</p>
                   <div class="flex gap-1 mt-0.5 flex-wrap">
                     @for (tag of entry.tags | slice:0:6; track $index) {
-                      <span class="px-1 py-px text-[8px] rounded font-mono font-bold text-white"
-                            [style.background-color]="getTagColor(tag)">{{ tag }}</span>
+                      <span class="px-1 py-px text-[8px] rounded font-mono font-bold text-[#04202C] border"
+                            [style.background-color]="getTagBgColor(tag)"
+                            [style.border-color]="getTagColor(tag) + '30'">{{ tag }}</span>
                     }
                     @if (entry.tags.length > 6) {
-                      <span class="text-[9px] text-slate-400">+{{ entry.tags.length - 6 }}</span>
+                      <span class="text-[9px] text-gray-800">+{{ entry.tags.length - 6 }}</span>
                     }
                   </div>
                 </div>
-                <span class="text-[10px] text-slate-400 dark:text-slate-500 shrink-0">
+                <span class="text-[10px] text-gray-800 shrink-0">
                   {{ formatDate(entry.created_at) }}
                 </span>
               </button>
@@ -571,17 +576,17 @@ interface HistoryEntry {
       <!-- ═══════════════════════════════════════════════════════ -->
       @if (!result && !loading && !error) {
         <div class="text-center py-16 animate-fadeInUp" style="animation-delay: 80ms">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#2F5496]/10 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/10
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#04202C]/10 to-violet-100/50
                       flex items-center justify-center">
-            <svg class="w-8 h-8 text-[#2F5496]/40 dark:text-blue-400/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-8 h-8 text-[#04202C]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                 d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <p class="text-sm text-slate-400 dark:text-slate-500">
-            Introduce una oracion y pulsa <span class="font-semibold text-[#2F5496] dark:text-blue-400">Etiquetar</span> para ejecutar Viterbi.
+          <p class="text-sm text-gray-800">
+            Introduce una oracion y pulsa <span class="font-semibold text-[#04202C]">Etiquetar</span> para ejecutar Viterbi.
           </p>
-          <p class="text-xs text-slate-300 dark:text-slate-600 mt-1">
+          <p class="text-xs text-gray-700 mt-1">
             O selecciona una de las oraciones requeridas.
           </p>
         </div>
@@ -602,39 +607,30 @@ interface HistoryEntry {
       transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
     .card-base:hover {
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 20px -4px rgba(47, 84, 150, 0.1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 20px -4px rgba(4, 32, 44, 0.1);
     }
-    :host-context(.dark) .card-base {
-      background: rgba(30, 41, 59, 0.5);
-      border-color: rgba(255, 255, 255, 0.04);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-    }
-    :host-context(.dark) .card-base:hover {
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), 0 8px 20px -4px rgba(59, 130, 246, 0.1);
-    }
-
     /* ── Matrix hero section ─────────────────────────── */
     .matrix-container {
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
-      border: 1px solid rgba(59, 130, 246, 0.15);
-      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.08),
+      background: linear-gradient(135deg, #04202C 0%, #1A3036 50%, #04202C 100%);
+      border: 1px solid rgba(4, 32, 44, 0.15);
+      box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(4, 32, 44, 0.08),
                   inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
     .matrix-toolbar {
-      background: linear-gradient(90deg, rgba(47, 84, 150, 0.3) 0%, rgba(30, 58, 138, 0.2) 100%);
-      border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+      background: linear-gradient(90deg, rgba(4, 32, 44, 0.2) 0%, rgba(48, 64, 64, 0.15) 100%);
+      border-bottom: 1px solid rgba(4, 32, 44, 0.12);
     }
     .matrix-corner-cell {
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(4, 32, 44, 0.9);
       color: #94A3B8;
     }
     .matrix-header-idle {
-      background: rgba(30, 41, 59, 0.6);
+      background: rgba(26, 48, 54, 0.7);
       color: #94A3B8;
     }
     .matrix-header-active {
-      background: rgba(59, 130, 246, 0.2);
-      color: #93C5FD;
+      background: rgba(4, 32, 44, 0.2);
+      color: #C9D1C8;
     }
 
     /* ── Animations ──────────────────────────────────── */
@@ -659,7 +655,7 @@ interface HistoryEntry {
 export class ViterbiComponent {
 
   // ── State ──────────────────────────────────────────
-  sentence = 'Habla con el enfermo grave de trasplantes.';
+  sentence = '';
   loading = false;
   exporting = false;
   error: string | null = null;
@@ -681,30 +677,31 @@ export class ViterbiComponent {
   // History
   history: HistoryEntry[] = [];
 
-  // Quick sentences
-  readonly quickSentences: string[] = [
-    'Habla con el enfermo grave de trasplantes.',
-    'El enfermo grave habla de trasplantes.',
-  ];
+  // Quick sentences (loaded from API)
+  quickSentences: string[] = [];
 
-  // EAGLES tag color map
-  private readonly tagColorMap: Record<string, string> = {
-    A: '#6366f1', // Adjetivo    - indigo
-    C: '#8b5cf6', // Conjuncion  - violet
-    D: '#0ea5e9', // Determinante - sky
-    F: '#94a3b8', // Puntuacion  - slate
-    I: '#f43f5e', // Interjec.   - rose
-    N: '#2F5496', // Nombre      - UNIR blue
-    P: '#14b8a6', // Pronombre   - teal
-    R: '#0ea5e9', // Adverbio    - sky
-    S: '#10b981', // Preposicion - emerald
-    V: '#ef4444', // Verbo       - red
-    W: '#a855f7', // Fecha       - purple
-    Z: '#06b6d4', // Numeral     - cyan
-  };
+  // EAGLES tag color map (loaded from API)
+  private tagColorMap: Record<string, string> = {};
 
   constructor(private apiService: ApiService) {
+    this.loadConfig();
     this.loadHistory();
+  }
+
+  private loadConfig(): void {
+    this.apiService.getTagColors().subscribe({
+      next: (colors) => { this.tagColorMap = colors; },
+      error: () => {},
+    });
+    this.apiService.getQuickSentences().subscribe({
+      next: (res) => {
+        this.quickSentences = res.sentences.map(s => s.sentence);
+        if (!this.sentence && this.quickSentences.length > 0) {
+          this.sentence = this.quickSentences[0];
+        }
+      },
+      error: () => {},
+    });
   }
 
   // ── Stat cards ──────────────────────────────────────
@@ -863,12 +860,12 @@ export class ViterbiComponent {
     // Log scale for better visual spread
     const logVal = -Math.log10(Math.max(value, 1e-30));
     // Lower logVal = higher prob
-    if (logVal < 2) return '#2563EB';
-    if (logVal < 4) return '#1E4D8C';
-    if (logVal < 6) return '#1E3A5F';
-    if (logVal < 10) return '#162C4A';
-    if (logVal < 15) return '#0F2035';
-    return '#0B1525';
+    if (logVal < 2) return '#04202C';
+    if (logVal < 4) return '#1A3036';
+    if (logVal < 6) return '#304040';
+    if (logVal < 10) return '#466053';
+    if (logVal < 15) return '#5B7065';
+    return '#7D8F84';
   }
 
   getMatrixTextColor(value: number | null): string {
@@ -934,6 +931,14 @@ export class ViterbiComponent {
     if (!tag || tag.length === 0) return '#9ca3af';
     const family = tag.charAt(0).toUpperCase();
     return this.tagColorMap[family] ?? '#9ca3af';
+  }
+
+  getTagBgColor(tag: string | null | undefined): string {
+    const hex = this.getTagColor(tag);
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, 0.12)`;
   }
 
   formatScientific(value: number | null | undefined): string {

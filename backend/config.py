@@ -41,6 +41,9 @@ _DEVELOPMENT_ORIGINS = [
 
 CORS_ORIGINS = _PRODUCTION_ORIGINS + (_DEVELOPMENT_ORIGINS if ENV != "production" else [])
 
+# Redis
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
 # Upload
 MAX_UPLOAD_SIZE = int(os.getenv("MAX_UPLOAD_SIZE", str(500 * 1024 * 1024)))  # 500 MB
 

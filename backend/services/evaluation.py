@@ -21,8 +21,17 @@ logger = logging.getLogger(__name__)
 UNKNOWN_PROB = 1e-10
 
 
-def _extract_sentences_from_corpus(corpus_dir: Optional[str] = None, max_files: Optional[int] = None) -> list[list[tuple[str, str]]]:
+def _extract_sentences_from_corpus(
+    corpus_dir: Optional[str] = None,
+    max_files: Optional[int] = None,
+    max_sentences: Optional[int] = None,
+) -> list[list[tuple[str, str]]]:
     """Extrae oraciones como listas de (word, tag) del corpus.
+
+    Args:
+        corpus_dir: Directorio del corpus.
+        max_files: Limite de archivos a leer.
+        max_sentences: Limite de oraciones totales a extraer.
 
     Returns:
         Lista de oraciones, cada oracion es lista de tuplas (word, tag).
@@ -56,12 +65,16 @@ def _extract_sentences_from_corpus(corpus_dir: Optional[str] = None, max_files: 
                 if current_sentence:
                     sentences.append(current_sentence)
                     current_sentence = []
+                    if max_sentences and len(sentences) >= max_sentences:
+                        return sentences
                 continue
 
             if not line:
                 if current_sentence:
                     sentences.append(current_sentence)
                     current_sentence = []
+                    if max_sentences and len(sentences) >= max_sentences:
+                        return sentences
                 continue
 
             parts = line.split()
@@ -79,6 +92,8 @@ def _extract_sentences_from_corpus(corpus_dir: Optional[str] = None, max_files: 
         if current_sentence:
             sentences.append(current_sentence)
             current_sentence = []
+            if max_sentences and len(sentences) >= max_sentences:
+                return sentences
 
     return sentences
 
@@ -229,6 +244,7 @@ def evaluate(
     smoothing: float = 1.0,
     seed: int = 42,
     max_files: Optional[int] = None,
+    max_sentences: Optional[int] = None,
     top_n_tags: int = 20,
 ) -> dict:
     """Ejecuta evaluacion completa con train/test split.
@@ -238,15 +254,16 @@ def evaluate(
         smoothing: Parametro alpha de Laplace.
         seed: Semilla para reproducibilidad.
         max_files: Limite de archivos del corpus.
+        max_sentences: Limite de oraciones totales a usar.
         top_n_tags: Cantidad de tags para la confusion matrix.
 
     Returns:
         dict con metricas globales, por tag, y confusion matrix.
     """
-    logger.info(f"Iniciando evaluacion (test_ratio={test_ratio}, smoothing={smoothing}, seed={seed})")
+    logger.info(f"Iniciando evaluacion (test_ratio={test_ratio}, smoothing={smoothing}, seed={seed}, max_sentences={max_sentences})")
 
     # 1. Extraer oraciones del corpus
-    sentences = _extract_sentences_from_corpus(max_files=max_files)
+    sentences = _extract_sentences_from_corpus(max_files=max_files, max_sentences=max_sentences)
     total_sentences = len(sentences)
 
     if total_sentences < 10:

@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 
 import { CorpusStats, CorpusUploadRequest, CorpusSearchResult, StatusResponse, TagDistribution } from '../models/corpus.model';
 import { ProbabilityResponse } from '../models/probability.model';
-import { ViterbiRequest, ViterbiResult, TagDescription, EaglesCategory } from '../models/viterbi.model';
+import { ViterbiRequest, ViterbiResult, TagDescription, EaglesCategory, QuickSentence, AnalysisQuestion, EvaluationResult, EaglesExample, EaglesPosition, ExportChecklistItem } from '../models/viterbi.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -58,6 +58,10 @@ export class ApiService {
     return this.http.post<StatusResponse>(`${this.baseUrl}/api/probabilities/train`, {});
   }
 
+  getTrainingStatus(taskId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/api/probabilities/train/status/${taskId}`);
+  }
+
   getEmissionProbs(tag?: string, limit = 20): Observable<ProbabilityResponse> {
     let params = new HttpParams().set('limit', limit);
     if (tag) params = params.set('tag', tag);
@@ -106,7 +110,85 @@ export class ApiService {
     return this.http.post<{ descriptions: TagDescription[] }>(`${this.baseUrl}/api/tags/describe-batch`, tags);
   }
 
-  // ── Exportación ───────────────────────────────────────
+  getTagColors(): Observable<Record<string, string>> {
+    return this.http.get<Record<string, string>>(`${this.baseUrl}/api/tags/colors`);
+  }
+
+  // ── EAGLES Reference Data ──────────────────────────
+
+  getEaglesExamples(): Observable<{ examples: EaglesExample[] }> {
+    return this.http.get<{ examples: EaglesExample[] }>(`${this.baseUrl}/api/eagles/examples`);
+  }
+
+  getEaglesPositions(): Observable<{ positions: EaglesPosition[] }> {
+    return this.http.get<{ positions: EaglesPosition[] }>(`${this.baseUrl}/api/eagles/positions`);
+  }
+
+  // ── Oraciones rápidas ───────────────────────────────
+
+  getQuickSentences(): Observable<{ sentences: QuickSentence[] }> {
+    return this.http.get<{ sentences: QuickSentence[] }>(`${this.baseUrl}/api/sentences`);
+  }
+
+  createQuickSentence(sentence: string, sortOrder = 0): Observable<QuickSentence> {
+    return this.http.post<QuickSentence>(`${this.baseUrl}/api/sentences`, { sentence, sort_order: sortOrder });
+  }
+
+  deleteQuickSentence(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/api/sentences/${id}`);
+  }
+
+  // ── Analisis (preguntas Q&A) ──────────────────────
+
+  getAnalysisQuestions(): Observable<{ questions: AnalysisQuestion[] }> {
+    return this.http.get<{ questions: AnalysisQuestion[] }>(`${this.baseUrl}/api/analysis/questions`);
+  }
+
+  // ── Evaluacion cuantitativa ───────────────────────
+
+  runEvaluation(params?: { test_ratio?: number; smoothing?: number; seed?: number; max_files?: number; max_sentences?: number; top_n_tags?: number }): Observable<EvaluationResult> {
+    let httpParams = new HttpParams();
+    if (params?.test_ratio !== undefined) httpParams = httpParams.set('test_ratio', params.test_ratio);
+    if (params?.smoothing !== undefined) httpParams = httpParams.set('smoothing', params.smoothing);
+    if (params?.seed !== undefined) httpParams = httpParams.set('seed', params.seed);
+    if (params?.max_files !== undefined) httpParams = httpParams.set('max_files', params.max_files);
+    if (params?.max_sentences !== undefined) httpParams = httpParams.set('max_sentences', params.max_sentences);
+    if (params?.top_n_tags !== undefined) httpParams = httpParams.set('top_n_tags', params.top_n_tags);
+    return this.http.post<EvaluationResult>(`${this.baseUrl}/api/evaluation/evaluate`, null, { params: httpParams });
+  }
+
+  // ── Export Checklist ─────────────────────────────────
+
+  getExportChecklist(): Observable<{ items: ExportChecklistItem[] }> {
+    return this.http.get<{ items: ExportChecklistItem[] }>(`${this.baseUrl}/api/exports/checklist`);
+  }
+
+  // ── Exportación (blob downloads) ─────────────────────
+
+  downloadEmissionExcelBlob(topN = 30): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/api/exports/emission/excel`, {
+      params: new HttpParams().set('top_n', topN),
+      responseType: 'blob',
+    });
+  }
+
+  downloadTransitionExcelBlob(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/api/exports/transition/excel`, { responseType: 'blob' });
+  }
+
+  downloadViterbiExcel(sentence: string): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/api/exports/viterbi/excel`, { sentence }, { responseType: 'blob' });
+  }
+
+  downloadNotebookBlob(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/api/exports/notebook`, { responseType: 'blob' });
+  }
+
+  downloadZipBlob(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/api/exports/zip`, { responseType: 'blob' });
+  }
+
+  // ── Exportación (URL directas — legacy) ────────────
 
   downloadEmissionExcel(topN = 30): string {
     return `${this.baseUrl}/api/exports/emission/excel?top_n=${topN}`;
@@ -114,10 +196,6 @@ export class ApiService {
 
   downloadTransitionExcel(): string {
     return `${this.baseUrl}/api/exports/transition/excel`;
-  }
-
-  downloadViterbiExcel(sentence: string): Observable<Blob> {
-    return this.http.post(`${this.baseUrl}/api/exports/viterbi/excel`, { sentence }, { responseType: 'blob' });
   }
 
   downloadNotebook(): string {

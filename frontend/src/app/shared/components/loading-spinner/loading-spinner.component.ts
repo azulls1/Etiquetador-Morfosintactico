@@ -14,7 +14,7 @@ import { Component, Input } from '@angular/core';
         </div>
         <span class="sr-only">Cargando...</span>
         @if (message) {
-          <p class="mt-4 text-sm text-slate-400 dark:text-slate-500 font-light">{{ message }}</p>
+          <p class="mt-4 text-sm text-gray-800 font-light">{{ message }}</p>
         }
       </div>
     }
@@ -35,7 +35,7 @@ import { Component, Input } from '@angular/core';
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #3B82F6;
+      background: #04202C;
       animation: pulseDot 1.4s ease-in-out infinite;
     }
     .dot-1 { animation-delay: 0s; }

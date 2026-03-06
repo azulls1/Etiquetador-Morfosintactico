@@ -3,32 +3,68 @@
 @source "./**/*.html";
 
 /* ═══════════════════════════════════════════════════════════
-   DARK MODE — class-based (Tailwind v4 uses media query by default)
-   This makes dark: utilities respond to .dark class on <html>
+   FOREST PALETTE — Nature-inspired muted greens
+   #04202C (forest) · #304040 (evergreen) · #5B7065 (pine) · #C9D1C8 (fog)
+   Override gray/slate/violet to forest-tinted neutrals.
    ═══════════════════════════════════════════════════════════ */
-@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-gray-50:  #F7F8F7;
+  --color-gray-100: #EFF2F0;
+  --color-gray-200: #DFE4E0;
+  --color-gray-300: #C9D1C8;
+  --color-gray-400: #9EADA3;
+  --color-gray-500: #7D8F84;
+  --color-gray-600: #5B7065;
+  --color-gray-700: #304040;
+  --color-gray-800: #1A3036;
+  --color-gray-900: #04202C;
+  --color-gray-950: #021519;
+
+  --color-slate-50:  #F7F8F7;
+  --color-slate-100: #EFF2F0;
+  --color-slate-200: #DFE4E0;
+  --color-slate-300: #C9D1C8;
+  --color-slate-400: #9EADA3;
+  --color-slate-500: #7D8F84;
+  --color-slate-600: #5B7065;
+  --color-slate-700: #304040;
+  --color-slate-800: #1A3036;
+  --color-slate-900: #04202C;
+  --color-slate-950: #021519;
+
+  --color-violet-50:  #EFF2F0;
+  --color-violet-100: #DFE4E0;
+  --color-violet-200: #C9D1C8;
+  --color-violet-300: #9EADA3;
+  --color-violet-400: #7D8F84;
+  --color-violet-500: #5B7065;
+  --color-violet-600: #466053;
+  --color-violet-700: #304040;
+  --color-violet-800: #1A3036;
+  --color-violet-900: #04202C;
+  --color-violet-950: #021519;
+}
 
 /* ═══════════════════════════════════════════════════════════
-   DESIGN TOKENS — Apple HIG / Linear inspired
-   Blue monochromatic palette, no orange/amber
+   DESIGN TOKENS — Forest palette
    ═══════════════════════════════════════════════════════════ */
 :root {
-  /* Primary blues */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-200: #bfdbfe;
-  --primary-300: #93c5fd;
-  --primary-400: #60a5fa;
-  --primary-500: #2F5496;
-  --primary-600: #1e3a6e;
-  --primary-700: #1e3a5f;
-  --primary-800: #1e2d4a;
-  --primary-900: #0f172a;
+  /* Primary forest scale */
+  --primary-50:  #EFF2F0;
+  --primary-100: #DFE4E0;
+  --primary-200: #C9D1C8;
+  --primary-300: #9EADA3;
+  --primary-400: #7D8F84;
+  --primary-500: #5B7065;
+  --primary-600: #466053;
+  --primary-700: #304040;
+  --primary-800: #1A3036;
+  --primary-900: #04202C;
 
-  /* Accent blues */
-  --accent: #3B82F6;
-  --accent-light: #60A5FA;
-  --accent-dark: #2563EB;
+  /* Accent — pine */
+  --accent: #5B7065;
+  --accent-light: #9EADA3;
+  --accent-dark: #304040;
 
   /* Animation tokens */
   --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -41,20 +77,20 @@
 
 body {
   @apply bg-gray-50 text-gray-900 antialiased;
-  font-family: 'Inter', 'SF Pro Display', 'SF Pro Text', system-ui, -apple-system, sans-serif;
-  font-size: 14px;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dark mode */
-.dark body,
-body.dark {
-  @apply bg-gray-950 text-gray-100;
-}
+/* ═══════════════════════════════════════════════════════════
+   FONT UTILITIES
+   ═══════════════════════════════════════════════════════════ */
+.font-display { font-family: 'Sora', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 
 /* ═══════════════════════════════════════════════════════════
-   SCROLLBAR — Thin 4px, blue tones
+   SCROLLBAR — Thin 4px, forest tones
    ═══════════════════════════════════════════════════════════ */
 ::-webkit-scrollbar {
   width: 4px;
@@ -65,25 +101,15 @@ body.dark {
 }
 ::-webkit-scrollbar-thumb {
   @apply rounded-full;
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(91, 112, 101, 0.4);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.6);
+  background: rgba(4, 32, 44, 0.5);
 }
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.3);
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
-}
-
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
-}
-.dark * {
-  scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+  scrollbar-color: rgba(91, 112, 101, 0.4) transparent;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -91,31 +117,31 @@ body.dark {
    ═══════════════════════════════════════════════════════════ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-12px); }
-  to   { opacity: 1; transform: translateX(0); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(12px); }
-  to   { opacity: 1; transform: translateX(0); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3); }
-  50%      { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(4, 32, 44, 0.3); }
+  50%      { box-shadow: 0 0 0 6px rgba(4, 32, 44, 0); }
 }
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
@@ -127,22 +153,22 @@ body.dark {
 }
 
 .animate-fadeIn {
-  animation: fadeIn var(--duration-slow) var(--ease-apple) both;
+  animation: fadeIn var(--duration-slow) var(--ease-apple) backwards;
 }
 .animate-fadeInUp {
-  animation: fadeInUp var(--duration-slow) var(--ease-apple) both;
+  animation: fadeInUp var(--duration-slow) var(--ease-apple) backwards;
 }
 .animate-scaleIn {
-  animation: scaleIn var(--duration-slow) var(--ease-apple) both;
+  animation: scaleIn var(--duration-slow) var(--ease-apple) backwards;
 }
 .animate-slideUp {
-  animation: slideUp 0.4s var(--ease-apple) both;
+  animation: slideUp 0.4s var(--ease-apple) backwards;
 }
 .animate-slideInLeft {
-  animation: slideInLeft var(--duration-slow) var(--ease-apple) both;
+  animation: slideInLeft var(--duration-slow) var(--ease-apple) backwards;
 }
 .animate-slideInRight {
-  animation: slideInRight var(--duration-slow) var(--ease-apple) both;
+  animation: slideInRight var(--duration-slow) var(--ease-apple) backwards;
 }
 
 /* Staggered children animation */
@@ -156,7 +182,7 @@ body.dark {
 .stagger-children > *:nth-child(8) { animation-delay: calc(var(--stagger-delay) * 8); }
 
 /* ═══════════════════════════════════════════════════════════
-   GLASSMORPHISM — Enhanced with blue tint
+   GLASSMORPHISM — Forest tint
    ═══════════════════════════════════════════════════════════ */
 .glass {
   background: rgba(255, 255, 255, 0.7);
@@ -164,60 +190,40 @@ body.dark {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
-.dark .glass {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(148, 163, 184, 0.08);
-}
 .glass-strong {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
-.dark .glass-strong {
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-}
 
 /* ═══════════════════════════════════════════════════════════
-   GRADIENT UTILITIES — Blue only
+   GRADIENT UTILITIES — Forest signature
    ═══════════════════════════════════════════════════════════ */
 .gradient-primary {
-  background: linear-gradient(135deg, #2F5496 0%, #3B82F6 50%, #1e3a6e 100%);
+  background: linear-gradient(135deg, #04202C 0%, #5B7065 100%);
 }
 .gradient-accent {
-  background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 50%, #2563EB 100%);
+  background: linear-gradient(135deg, #04202C 0%, #304040 50%, #5B7065 100%);
 }
 .gradient-hero {
-  background: linear-gradient(135deg, #2F5496 0%, #1e3a6e 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #04202C 0%, #5B7065 50%, #C9D1C8 100%);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   SHADOW UTILITIES — Apple-style multi-layer soft shadows
+   SHADOW UTILITIES — Forest tint
    ═══════════════════════════════════════════════════════════ */
 .shadow-blue {
-  box-shadow: 0 1px 2px rgba(47, 84, 150, 0.04),
-              0 4px 12px -2px rgba(47, 84, 150, 0.12);
+  box-shadow: 0 1px 2px rgba(4, 32, 44, 0.04),
+              0 4px 12px -2px rgba(4, 32, 44, 0.12);
 }
 .shadow-blue-lg {
-  box-shadow: 0 1px 3px rgba(47, 84, 150, 0.04),
-              0 8px 24px -4px rgba(47, 84, 150, 0.15),
-              0 16px 40px -8px rgba(47, 84, 150, 0.08);
+  box-shadow: 0 1px 3px rgba(4, 32, 44, 0.04),
+              0 8px 24px -4px rgba(4, 32, 44, 0.15),
+              0 16px 40px -8px rgba(4, 32, 44, 0.08);
 }
 .shadow-soft {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03),
               0 4px 12px -2px rgba(0, 0, 0, 0.06),
               0 12px 24px -4px rgba(0, 0, 0, 0.04);
-}
-.dark .shadow-soft {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
-              0 4px 12px -2px rgba(0, 0, 0, 0.3);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   DARK MODE TRANSITION
-   ═══════════════════════════════════════════════════════════ */
-body {
-  transition: background-color var(--duration-normal) var(--ease-apple),
-              color var(--duration-fast) var(--ease-apple);
 }

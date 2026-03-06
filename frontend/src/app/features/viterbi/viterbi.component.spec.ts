@@ -177,7 +177,7 @@ describe('ViterbiComponent', () => {
   describe('getTagColor', () => {
     it('should return the correct color for known tag families', () => {
       expect(component.getTagColor('VMIP3S0')).toBe('#ef4444'); // V = Verbo = red
-      expect(component.getTagColor('NCMS000')).toBe('#2F5496'); // N = Nombre = blue
+      expect(component.getTagColor('NCMS000')).toBe('#04202C'); // N = Nombre = forest
       expect(component.getTagColor('AQ0CS0')).toBe('#6366f1');  // A = Adjetivo = indigo
     });
 

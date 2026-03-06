@@ -8,7 +8,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
   standalone: true,
   imports: [RouterOutlet, NavbarComponent, SidebarComponent],
   template: `
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+    <div class="min-h-screen bg-gray-50 flex flex-col">
       <!-- Skip link (WCAG 2.4.1) -->
       <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
@@ -21,7 +21,9 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 
         <main id="main-content" role="main" aria-label="Contenido principal"
               class="flex-1 overflow-x-hidden min-w-0">
-          <div class="max-w-7xl mx-auto px-5 lg:px-8 py-6 lg:py-8 animate-fadeInUp">
+          <div class="max-w-7xl mx-auto px-5 lg:px-8 py-6 lg:py-8"
+               [class.animate-fadeInUp]="contentAnimating"
+               (animationend)="contentAnimating = false">
             <router-outlet />
           </div>
         </main>
@@ -33,7 +35,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
           Etiquetador Morfosintactico HMM &mdash; Procesamiento del Lenguaje Natural &mdash; UNIR 2026
         </p>
         <p class="text-[10px] app-footer-sub mt-0.5">
-          Desarrollado por Samael Hernandez &mdash; Maestria en Inteligencia Artificial
+          Desarrollado por Adonai Samael Hernandez Mata, Diego Alfonso Najera Ortiz, Mauricio Alberto Alvares Aspeitia &mdash; Maestria en Inteligencia Artificial
         </p>
       </footer>
     </div>
@@ -48,7 +50,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
       left: 0;
       z-index: 100;
       padding: 0.75rem 1.5rem;
-      background: #2F5496;
+      background: #04202C;
       color: white;
       font-weight: 600;
       font-size: 0.875rem;
@@ -60,17 +62,13 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
     }
 
     .app-footer {
-      border-top: 1px solid rgba(0, 0, 0, 0.04);
+      border-top: 1px solid rgba(4, 32, 44, 0.06);
     }
-    :host-context(.dark) .app-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-    }
-    .app-footer-text { color: #94a3b8; }
-    :host-context(.dark) .app-footer-text { color: #475569; }
-    .app-footer-sub { color: #cbd5e1; }
-    :host-context(.dark) .app-footer-sub { color: #334155; }
+    .app-footer-text { color: #304040; }
+    .app-footer-sub { color: #304040; }
   `],
 })
 export class AppComponent {
   sidebarOpen = false;
+  contentAnimating = true;
 }

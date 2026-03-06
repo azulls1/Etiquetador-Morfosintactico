@@ -1,4 +1,4 @@
-"""Endpoints de exportación: Excel, Notebook, ZIP."""
+"""Endpoints de exportación: Excel, Notebook, ZIP, Checklist."""
 
 import logging
 import zipfile
@@ -9,7 +9,15 @@ from fastapi.responses import FileResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-from models.schemas import ViterbiRequest
+from models.schemas import (
+    ViterbiRequest,
+    ExportChecklistResponse, ExportChecklistItem,
+    ExportChecklistItemCreate, ExportChecklistItemUpdate,
+)
+from models.database import (
+    load_export_checklist, save_export_checklist_item,
+    update_export_checklist_item, delete_export_checklist_item,
+)
 from services import excel_exporter, notebook_generator, viterbi_algorithm
 from config import EXPORTS_DIR
 
@@ -128,3 +136,38 @@ def export_all_zip(request: Request):
     except Exception as e:
         logger.error(f"Error generando ZIP: {e}")
         raise HTTPException(status_code=500, detail="Error interno al generar el ZIP.")
+
+
+# ── Checklist CRUD ─────────────────────────────────────
+
+
+@router.get("/checklist", response_model=ExportChecklistResponse)
+async def get_checklist():
+    """Lista todos los items del checklist de entregables."""
+    return {"items": load_export_checklist()}
+
+
+@router.post("/checklist", response_model=ExportChecklistItem, status_code=201)
+async def create_checklist_item(body: ExportChecklistItemCreate):
+    """Crea un nuevo item en el checklist de entregables."""
+    result = save_export_checklist_item(body.label, body.sort_order)
+    if not result:
+        raise HTTPException(status_code=500, detail="No se pudo crear el item")
+    return result
+
+
+@router.put("/checklist/{item_id}", response_model=ExportChecklistItem)
+async def update_checklist_item(item_id: int, body: ExportChecklistItemUpdate):
+    """Actualiza un item del checklist de entregables."""
+    result = update_export_checklist_item(item_id, label=body.label, sort_order=body.sort_order)
+    if not result:
+        raise HTTPException(status_code=404, detail="Item no encontrado")
+    return result
+
+
+@router.delete("/checklist/{item_id}")
+async def delete_checklist_item(item_id: int):
+    """Elimina un item del checklist de entregables."""
+    if not delete_export_checklist_item(item_id):
+        raise HTTPException(status_code=404, detail="Item no encontrado")
+    return {"status": "ok", "message": "Item eliminado"}

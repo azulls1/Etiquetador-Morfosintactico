@@ -21,6 +21,7 @@ def run_evaluation(
     smoothing: float = Query(1.0, ge=0.0, le=10.0, description="Parametro alpha de Laplace"),
     seed: int = Query(42, ge=0, description="Semilla para reproducibilidad del split"),
     max_files: int = Query(None, ge=1, description="Limite de archivos del corpus a procesar"),
+    max_sentences: int = Query(None, ge=50, description="Limite de oraciones totales a usar del corpus"),
     top_n_tags: int = Query(20, ge=5, le=50, description="Cantidad de tags para la confusion matrix"),
 ):
     """Ejecuta evaluacion cuantitativa completa del modelo HMM.
@@ -42,6 +43,7 @@ def run_evaluation(
             smoothing=smoothing,
             seed=seed,
             max_files=max_files,
+            max_sentences=max_sentences,
             top_n_tags=top_n_tags,
         )
         return result

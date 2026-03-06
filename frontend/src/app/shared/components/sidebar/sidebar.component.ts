@@ -62,55 +62,33 @@ interface NavGroup {
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       border-right: 1px solid rgba(0, 0, 0, 0.04);
     }
-    :host-context(.dark) .sidebar-panel {
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-right: 1px solid rgba(255, 255, 255, 0.04);
-    }
 
-    .sidebar-section-text { color: #94a3b8; }
-    :host-context(.dark) .sidebar-section-text { color: #94a3b8; }
+    .sidebar-section-text { color: #5B7065; }
 
     .sidebar-link {
-      color: #64748b;
+      color: #5B7065;
       transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
     .sidebar-link:hover {
-      background: rgba(59, 130, 246, 0.04);
-      color: #334155;
-      transform: translateX(2px);
-    }
-    :host-context(.dark) .sidebar-link { color: #cbd5e1; }
-    :host-context(.dark) .sidebar-link:hover {
-      background: rgba(59, 130, 246, 0.06);
-      color: #e2e8f0;
+      background: rgba(4, 32, 44, 0.04);
+      color: #04202C;
       transform: translateX(2px);
     }
 
-    .sidebar-icon { color: #94a3b8; }
-    :host-context(.dark) .sidebar-icon { color: #94a3b8; }
+    .sidebar-icon { color: #304040; }
 
-    /* Active state — clean blue highlight */
+    /* Active state — forest highlight */
     .sidebar-link.sidebar-active {
-      background: rgba(59, 130, 246, 0.08);
-      color: #2563EB;
+      background: rgba(4, 32, 44, 0.08);
+      color: #04202C;
       font-weight: 500;
     }
-    :host-context(.dark) .sidebar-link.sidebar-active {
-      background: rgba(59, 130, 246, 0.12);
-      color: #60A5FA;
-    }
     .sidebar-link.sidebar-active .sidebar-icon {
-      color: #3B82F6 !important;
-    }
-    :host-context(.dark) .sidebar-link.sidebar-active .sidebar-icon {
-      color: #60A5FA !important;
+      color: #04202C !important;
     }
 
     /* Hover icon */
-    .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #3B82F6; }
-    :host-context(.dark) .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #60A5FA; }
+    .sidebar-link:hover:not(.sidebar-active) .sidebar-icon { color: #304040; }
 
     .sidebar-overlay {
       background: rgba(0, 0, 0, 0.3);

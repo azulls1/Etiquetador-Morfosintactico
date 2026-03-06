@@ -8,3 +8,5 @@ python-dotenv==1.0.1
 pydantic==2.10.4
 requests==2.32.3
 python-multipart==0.0.19
+redis==5.2.1
+celery[redis]==5.4.0
