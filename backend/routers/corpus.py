@@ -220,10 +220,7 @@ async def search_word_get(
     """
     result = corpus_parser.search_word(word, limit)
     if not result:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Palabra '{word}' no encontrada en el corpus."
-        )
+        return CorpusSearchResult(word=word.lower(), tags={}, total_occurrences=0)
     return CorpusSearchResult(**result)
 
 
@@ -232,10 +229,7 @@ async def search_word_post(request: CorpusSearchRequest):
     """Busca una palabra en el corpus (deprecated: usar GET /search?word=X)."""
     result = corpus_parser.search_word(request.word, request.limit)
     if not result:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Palabra '{request.word}' no encontrada en el corpus."
-        )
+        return CorpusSearchResult(word=request.word.lower(), tags={}, total_occurrences=0)
     return CorpusSearchResult(**result)
 
 

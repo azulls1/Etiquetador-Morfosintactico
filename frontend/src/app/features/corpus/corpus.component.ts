@@ -681,7 +681,7 @@ export class CorpusComponent implements OnInit, OnDestroy {
 
     this.apiService.searchWord(term).subscribe({
       next: (result) => {
-        this.searchResult = result;
+        this.searchResult = result.total_occurrences > 0 ? result : null;
         this.searchingWord = false;
       },
       error: () => {

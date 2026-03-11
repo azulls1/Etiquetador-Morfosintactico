@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, inject } from '@angular/core';
-import { forkJoin, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
 import { CorpusStats, CorpusSearchResult } from '../../core/models/corpus.model';
 import { ViterbiResult, TagDescription, AnalysisQuestion, ExportChecklistItem } from '../../core/models/viterbi.model';
@@ -984,11 +983,9 @@ export class InformeComponent implements OnInit, AfterViewInit, OnDestroy {
   // ── Data loading ───────────────────────────────
 
   private loadWordEmissions(): void {
-    const calls: Record<string, Observable<CorpusSearchResult | null>> = {};
+    const calls: Record<string, Observable<CorpusSearchResult>> = {};
     for (const w of this.sentenceWords) {
-      calls[w] = this.api.searchWord(w, 10).pipe(
-        catchError(() => of(null))
-      );
+      calls[w] = this.api.searchWord(w, 10);
     }
     if (Object.keys(calls).length === 0) {
       this.emissionsLoaded = true;
@@ -997,7 +994,7 @@ export class InformeComponent implements OnInit, AfterViewInit, OnDestroy {
     forkJoin(calls).subscribe({
       next: (results) => {
         for (const [word, result] of Object.entries(results)) {
-          if (result) this.wordEmissions.set(word, result);
+          if (result.total_occurrences > 0) this.wordEmissions.set(word, result);
         }
         this.emissionsLoaded = true;
       },
