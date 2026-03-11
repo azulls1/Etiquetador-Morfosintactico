@@ -16,7 +16,8 @@ venv/
 env/
 
 # Backend cache y exports generados
-backend/cache/*.pkl
+backend/cache/
+backend/corpus/
 backend/exports/*.xlsx
 backend/exports/*.ipynb
 backend/exports/*.zip

@@ -660,17 +660,21 @@ def _seed_analysis_questions() -> None:
          '<p><strong>Conclusion:</strong> El modelo HMM asigna correctamente las etiquetas gracias a que las probabilidades de transicion de bigramas capturan patrones sintacticos como &laquo;preposicion &rarr; articulo&raquo;, &laquo;articulo &rarr; sustantivo&raquo; y &laquo;sustantivo &rarr; adjetivo&raquo;, resolviendo adecuadamente las ambiguedades contextuales.</p>'),
 
         (2, 'Etiqueta "El enfermo grave habla de trasplantes." y evalua si es correcto',
-         '<p>Esta oracion contiene las <strong>mismas palabras</strong> que la anterior pero en un <strong>orden diferente</strong>. El cambio de orden sintactico altera las probabilidades de transicion del modelo HMM:</p>'
+         '<p>Esta oracion contiene las <strong>mismas palabras</strong> que la primera pero en un <strong>orden diferente</strong>. El cambio de orden sintactico altera las probabilidades de transicion del modelo HMM y puede revelar las <strong>limitaciones del contexto bigrama</strong>:</p>'
          '<ul class="list-disc pl-5 space-y-2">'
-         '<li><strong>&laquo;El&raquo;</strong>: Articulo determinado masculino singular (DA0MS0). Correcto.</li>'
-         '<li><strong>&laquo;enfermo&raquo;</strong>: Tras el articulo &laquo;El&raquo;, la transicion &laquo;DA0MS0 &rarr; NCMS000&raquo; tiene alta probabilidad. El modelo deberia asignar NCMS000 (sustantivo), lo cual es correcto: &laquo;el enfermo&raquo; es el sujeto de la oracion.</li>'
-         '<li><strong>&laquo;grave&raquo;</strong>: Adjetivo calificativo (AQ0CS0). La transicion &laquo;NCMS000 &rarr; AQ0CS0&raquo; (sustantivo &rarr; adjetivo) es natural. Correcto.</li>'
-         '<li><strong>&laquo;habla&raquo;</strong>: En esta posicion, despues de un adjetivo, la transicion &laquo;AQ0CS0 &rarr; VMIP3S0&raquo; (adjetivo &rarr; verbo) favorece la etiqueta verbal. &laquo;habla&raquo; funciona aqui como el verbo principal de la oracion. El modelo deberia asignar VMIP3S0, lo cual es correcto.</li>'
-         '<li><strong>&laquo;de&raquo;</strong>: Preposicion (SPS00). Correcto.</li>'
-         '<li><strong>&laquo;trasplantes&raquo;</strong>: Sustantivo comun masculino plural (NCMP000). Correcto.</li>'
-         '<li><strong>&laquo;.&raquo;</strong>: Signo de puntuacion (Fp). Correcto.</li>'
+         '<li><strong>&laquo;El&raquo;</strong> (DA0MS0): Articulo determinado masculino singular. <strong>Correcto.</strong></li>'
+         '<li><strong>&laquo;enfermo&raquo;</strong> (NCMS000): Sustantivo comun masculino singular. <strong>Correcto.</strong> Tras el articulo &laquo;El&raquo;, la transicion DA0MS0 &rarr; NCMS000 tiene alta probabilidad.</li>'
+         '<li><strong>&laquo;grave&raquo;</strong> (AQ0CS0): Adjetivo calificativo, comun, singular. <strong>Correcto.</strong> Modifica al sustantivo &laquo;enfermo&raquo;.</li>'
+         '<li><strong>&laquo;habla&raquo;</strong>: Palabra <strong>clave de ambiguedad</strong>. Puede ser VMIP3S0 (verbo) o NCFS000 (sustantivo femenino). Linguisticamente es el verbo principal (predicado). El resultado depende de la implementacion:'
+         '<ul class="list-disc pl-5 mt-1 space-y-1">'
+         '<li><em>HMM basico (sin suavizado):</em> Etiqueta como <strong>NCFS000</strong> (incorrecto), porque el bigrama AQ0CS0 &rarr; NCFS000 es mas frecuente que AQ0CS0 &rarr; VMIP3S0.</li>'
+         '<li><em>HMM con suavizado de Laplace:</em> Etiqueta como <strong>VMIP3S0</strong> (correcto), porque el suavizado redistribuye la masa de probabilidad.</li>'
+         '</ul>Este caso demuestra la limitacion del contexto bigrama y la importancia del suavizado.</li>'
+         '<li><strong>&laquo;de&raquo;</strong> (SPS00): Preposicion. <strong>Correcto.</strong></li>'
+         '<li><strong>&laquo;trasplantes&raquo;</strong> (NCMP000): Sustantivo comun masculino plural. <strong>Correcto.</strong></li>'
+         '<li><strong>&laquo;.&raquo;</strong> (Fp): Signo de puntuacion. <strong>Correcto.</strong></li>'
          '</ul>'
-         '<p><strong>Comparacion clave:</strong> Aunque ambas oraciones comparten las mismas palabras, el cambio de orden puede afectar la etiqueta de &laquo;Habla/habla&raquo; y &laquo;enfermo&raquo;. Las probabilidades de transicion de bigramas cambian segun el contexto inmediato, demostrando la dependencia del modelo HMM respecto al orden de las palabras.</p>'),
+         '<p><strong>Comparacion:</strong> En la primera oracion, &laquo;Habla&raquo; en posicion inicial tiene el bigrama q0 &rarr; VMIP3S0 con alta probabilidad, por lo que ambas implementaciones aciertan. En la segunda, &laquo;habla&raquo; aparece tras el adjetivo &laquo;grave&raquo;, donde la competencia entre sustantivo y verbo depende del suavizado utilizado.</p>'),
 
         (3, 'Cuales son las limitaciones del etiquetador?',
          '<p>El etiquetador basado en HMM con algoritmo de Viterbi presenta las siguientes <strong>limitaciones</strong>:</p>'
